@@ -1,5 +1,7 @@
 #include "Permutazione.h";
 #include <memory>
+#include "Random.h"
+#include <iostream>
 
 Permutazione::Permutazione(unsigned short d) : dimensione(d){
 	individuo = new unsigned short[dimensione];
@@ -15,7 +17,7 @@ Permutazione::Permutazione(unsigned short* p, unsigned short d) : dimensione(d) 
 }
 
 Permutazione::~Permutazione() {
-	//delete[] individuo;  Errore nello heap(?)
+	//delete[] individuo;  Errore nello heap(?) Problema causato dall'overloading degli operatori.
 }
 
 Permutazione Permutazione::operator+(Permutazione& p) {
@@ -47,19 +49,105 @@ Permutazione Permutazione::operator-(Permutazione& p) {
 Permutazione Permutazione::operator*(const double f) {
 	Permutazione nuovaPermutazione(dimensione);
 
-	if (f == 0.) {
-		for (int k = 0; k < dimensione; k++) {
-			nuovaPermutazione.individuo[k] = k;
-		}
-	}
-	else if (f == 1.) {
+	if (f == 1.) {
 		std::memcpy(nuovaPermutazione.individuo, this->individuo, sizeof(unsigned short) * dimensione);
 	}
-	else {
+	else if (f > 0) {
+		unsigned int numeroInversioniMassime = dimensione * (dimensione - 1) / 2;
+		unsigned short* arrayInversioni = new unsigned short[numeroInversioniMassime];
 
+		unsigned int numeroInversioniP = numeroInversioni(*this);
+
+		unsigned int nInvApplicabili = (unsigned int) ceil(f * numeroInversioniP);
+
+		if (f < 1.) {
+			Permutazione copia(this->individuo, this->dimensione);
+			copia = !copia;
+			randomBS(copia, nInvApplicabili, arrayInversioni);
+
+		}
+		else {
+			//caso f > 1. TODO
+		}
+
+		
+		for (unsigned int k = 0; k < nInvApplicabili; k++) {
+			unsigned short temp = nuovaPermutazione.individuo[arrayInversioni[k]];
+			nuovaPermutazione.individuo[arrayInversioni[k]] = nuovaPermutazione.individuo[arrayInversioni[k] + 1];
+			nuovaPermutazione.individuo[arrayInversioni[k] + 1] = temp;
+		}
+		
+
+		delete[] arrayInversioni;
 	}
+
+	//caso f negativo TODO
 
 	return nuovaPermutazione;
 }
 
+Permutazione Permutazione::operator=(Permutazione& p) {
+	memcpy(this->individuo, p.individuo, sizeof(unsigned short) * p.dimensione);
+	score = p.score;
+	return *this;
+}
+
+void Permutazione::randomBS(Permutazione& p, unsigned int limiteTrasposizioni, unsigned short* risultato) {
+
+	Permutazione pCopia(p.individuo, p.dimensione);
+	
+	unsigned short* zeta = new unsigned short[p.dimensione - 1];
+	unsigned short cursoreZeta = 0;
+
+	unsigned int cursoreTrasposizioni = 0;
+	unsigned int contatoreTrasposizioni = 0;
+
+	for (unsigned short i = 0; i < p.dimensione - 1; i++) {
+		if (p.individuo[i] > p.individuo[i + 1])
+			zeta[cursoreZeta++] = i;
+	}
+
+	Random r;
+	unsigned short random, randomZeta, temp;
+
+	while (cursoreZeta > 0 && contatoreTrasposizioni < limiteTrasposizioni) {
+
+		random = r.randIntU(0, cursoreZeta - 1);
+		randomZeta = zeta[random];
+		
+		risultato[contatoreTrasposizioni++] = randomZeta;
+
+
+		temp = pCopia.individuo[randomZeta];
+		pCopia.individuo[randomZeta] = pCopia.individuo[randomZeta + 1];
+		pCopia.individuo[randomZeta + 1] = temp;
+
+		zeta[random] = zeta[--cursoreZeta];
+
+		if (randomZeta > 0 && pCopia.individuo[randomZeta - 1] > pCopia.individuo[randomZeta] && 
+			pCopia.individuo[randomZeta - 1] < pCopia.individuo[randomZeta + 1])
+				zeta[cursoreZeta++] = randomZeta - 1;
+
+		if(randomZeta + 2 < p.dimensione && pCopia.individuo[randomZeta + 1] > pCopia.individuo[randomZeta + 2] &&
+			pCopia.individuo[randomZeta] < pCopia.individuo[randomZeta + 2])
+				zeta[cursoreZeta++] = randomZeta + 1;
+
+	}
+
+	delete[] zeta;
+}
+
+unsigned int Permutazione::numeroInversioni(Permutazione& p) {
+
+	unsigned int inv = 0;
+
+	for (unsigned short i = 0; i < p.dimensione - 1; i++) {
+		for (unsigned short j = i + 1; j < p.dimensione; j++) {
+			if (p.individuo[i] > p.individuo[j])
+				inv++;
+		}
+	}
+
+	return inv;
+}
 

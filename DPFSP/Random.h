@@ -16,4 +16,9 @@ class Random {
 			uniform_int_distribution<int> distrib(a, b);
 			return distrib(gen);
 		}
+
+		double randDouble(double a, double b) {
+			uniform_real_distribution<double> distrib(a, b);
+			return distrib(gen);
+		}
 };

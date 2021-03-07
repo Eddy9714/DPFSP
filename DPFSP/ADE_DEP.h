@@ -1,15 +1,17 @@
 #pragma once
-#include "Individuo.h"
-#include "Istanza.h";
-#include "ADE.h"
+#include "Permutazione.h"
+#include <vector>
+#include <memory>
 
-class ADE_DEP : public ADE{
-	public:
-		ADE_DEP(Istanza*);
+using namespace std;
 
-		void inizializzaPopolazione(Individuo**, unsigned short);
-		unsigned int esegui(unsigned short, unsigned short);
-	
+class ADE_DEP {
+
 	protected:
-		Istanza* istanza;
+		virtual Permutazione** creaPopolazione(unsigned short) = 0;
+		virtual void inizializzaPopolazione(Permutazione**, unsigned short) = 0;
+		virtual void eliminaPopolazione(Permutazione**, unsigned short) = 0;
+		virtual unsigned int valutaIndividuo(Permutazione*) = 0;
+		virtual void stampa(Permutazione**, unsigned short) = 0;
+		unsigned int esegui(unsigned short, unsigned short);
 };

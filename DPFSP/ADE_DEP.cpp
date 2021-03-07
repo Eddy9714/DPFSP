@@ -1,48 +1,62 @@
+#pragma once
 #include "ADE_DEP.h"
-#include "Permutazione.h"
-#include "Random.h"
-
-#include <memory>
+#include "IndiciRandom.h"
 
 #include <iostream>
 
 using namespace std;
 
-ADE_DEP::ADE_DEP(Istanza* i) : ADE::ADE() {
-	istanza = i;
-}
-
-void ADE_DEP::inizializzaPopolazione(Individuo** popolazione, unsigned short nIndividui) {
-	for (int i = 0; i < nIndividui; i++) {
-
-		for (int j = 0; j < istanza->lavori + istanza->fabbriche - 1; j++) {
-			popolazione[i]->individuo[j] = j;
-		}
-
-		unique_ptr<Random> r(new Random());
-
-		for (int k = istanza->lavori + istanza->fabbriche - 2; k > 0; k--) {
-			int valoreRandom = r->randIntU(0, k);
-
-			unsigned short tmp = popolazione[i]->individuo[valoreRandom];
-			popolazione[i]->individuo[valoreRandom] = popolazione[i]->individuo[k];
-			popolazione[i]->individuo[k] = tmp;
-		}
-
-		for (int j = 0; j < istanza->lavori + istanza->fabbriche - 1; j++) {
-			cout << popolazione[i]->individuo[j] << "\t";
-		}
-
-
-		cout << ":" << "\t" << popolazione[i]->makeSpan() << endl;
-	}
-}
-
-unsigned int valutaIndividuo(Individuo* i) {
-	Permutazione* p = (Permutazione*)i;
-	return 0;
-}
-
 unsigned int ADE_DEP::esegui(unsigned short nIndividui, unsigned short nGenerazioni) {
-	return ADE::esegui(nIndividui, nGenerazioni);
+	
+	// Crea e inizializza popolazione
+	Permutazione** popolazione = creaPopolazione(nIndividui);
+	Permutazione** popolazioneAlternativa = creaPopolazione(nIndividui);
+
+	inizializzaPopolazione(popolazione, nIndividui);
+
+	IndiciRandom r(nIndividui);
+	unique_ptr<unsigned short[]> treIndici = unique_ptr<unsigned short[]>(new unsigned short[3]);
+
+	for (unsigned short i = 0; i < nIndividui; i++) {
+		popolazione[i]->score = valutaIndividuo(popolazione[i]);
+	}
+
+	for (unsigned short g = 0; g < nGenerazioni; g++) {
+
+		cout << "Generazione: " << g << endl;
+		cout << endl;
+
+		stampa(popolazione, nIndividui);
+
+		for (unsigned short i = 0; i < nIndividui; i++) {
+
+			Random ran;
+			double F = ran.randDouble(0.0, 1.0);
+
+			r.generaIndici(treIndici, 3);
+
+			Permutazione ris = *(popolazione[treIndici[0]]) + 
+				((*(popolazione[treIndici[1]]) - *(popolazione[treIndici[2]])) * F);
+
+			*(popolazioneAlternativa[i]) = ris;
+			//Crossover
+
+			//Valutazione nuovi individui
+			popolazioneAlternativa[i]->score = valutaIndividuo(popolazioneAlternativa[i]);
+		}
+
+		for (unsigned short i = 0; i < nIndividui; i++) {
+			//Seleziona individui
+			if (popolazioneAlternativa[i]->score < popolazione[i]->score) {
+				*(popolazione[i]) = *(popolazioneAlternativa[i]);
+			}
+		}
+
+	}
+
+	eliminaPopolazione(popolazione, nIndividui);
+	eliminaPopolazione(popolazioneAlternativa, nIndividui);
+
+	return 0;
+
 }
