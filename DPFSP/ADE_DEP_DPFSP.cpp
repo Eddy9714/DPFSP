@@ -18,9 +18,11 @@ Permutazione** ADE_DEP_DPFSP::creaPopolazione(unsigned short nIndividui) {
 }
 
 void ADE_DEP_DPFSP::eliminaPopolazione(Permutazione** popolazione, unsigned short nIndividui) {
+
 	for (int k = 0; k < nIndividui; k++) {
-		delete[] popolazione[k];
+		delete popolazione[k];
 	}
+	
 	delete[] popolazione;
 }
 
@@ -32,10 +34,10 @@ void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned 
 			popolazione[i]->individuo[j] = j;
 		}
 
-		unique_ptr<Random> r(new Random());
+		Random r;
 
 		for (int k = istanza.lavori + istanza.fabbriche - 2; k > 0; k--) {
-			int valoreRandom = r->randIntU(0, k);
+			int valoreRandom = r.randIntU(0, k);
 
 			unsigned short tmp = popolazione[i]->individuo[valoreRandom];
 			popolazione[i]->individuo[valoreRandom] = popolazione[i]->individuo[k];
@@ -80,8 +82,8 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 	return max(Cmax, Cm[istanza.macchine - 1]);
 }
 
-unsigned int ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short nGenerazioni) {
-	return ADE_DEP::esegui(nIndividui, nGenerazioni);
+unsigned int ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta) {
+	return ADE_DEP::esegui(nIndividui, nGenerazioni, theta);
 }
 
 void ADE_DEP_DPFSP::stampa(Permutazione** popolazione, unsigned short nIndividui) {
@@ -92,7 +94,7 @@ void ADE_DEP_DPFSP::stampa(Permutazione** popolazione, unsigned short nIndividui
 			cout << popolazione[i]->individuo[j] << "\t";
 		}
 
-		cout << ":" << "\t" << valutaIndividuo(popolazione[i]) << endl;
+		cout << ":" << "\t" << popolazione[i]->score << endl;
 	}
 
 	cout << endl;

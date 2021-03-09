@@ -33,8 +33,8 @@ Istanza::Istanza(string percorso) {
 
 Istanza::~Istanza(){
 
-	for (int m = 0; m < macchine; m++) {
-		delete[] p[m];
+	for (int i = 0; i < lavori; i++) {
+		delete[] p[i];
 	}
 
 	delete[] p;

@@ -3,9 +3,17 @@
 #include "Random.h"
 #include <iostream>
 
-Permutazione::Permutazione(unsigned short d) : dimensione(d){
-	individuo = new unsigned short[dimensione];
+Permutazione::Permutazione(const Permutazione& p) : dimensione(p.dimensione) {
+	individuo = new unsigned short[p.dimensione];
+	std::memcpy(individuo, p.individuo, dimensione * sizeof(unsigned short));
+	score = p.score;
+}
 
+Permutazione::Permutazione(unsigned short d) : dimensione(d){
+	individuo = new unsigned short[d];
+}
+
+void Permutazione::identita() {
 	for (int k = 0; k < dimensione; k++) {
 		individuo[k] = k;
 	}
@@ -17,7 +25,7 @@ Permutazione::Permutazione(unsigned short* p, unsigned short d) : dimensione(d) 
 }
 
 Permutazione::~Permutazione() {
-	//delete[] individuo;  Errore nello heap(?) Problema causato dall'overloading degli operatori.
+	delete[] individuo;
 }
 
 Permutazione Permutazione::operator+(Permutazione& p) {
@@ -41,7 +49,6 @@ Permutazione Permutazione::operator!() {
 }
 
 Permutazione Permutazione::operator-(Permutazione& p) {
-	Permutazione nuovaPermutazione(dimensione);
 	Permutazione permutazioneInversa = !p;
 	return permutazioneInversa + *this;
 }
@@ -64,10 +71,20 @@ Permutazione Permutazione::operator*(const double f) {
 			Permutazione copia(this->individuo, this->dimensione);
 			copia = !copia;
 			randomBS(copia, nInvApplicabili, arrayInversioni);
-
+			nuovaPermutazione.identita();
 		}
 		else {
-			//caso f > 1. TODO
+			nInvApplicabili = min(numeroInversioniMassime, nInvApplicabili);
+			nInvApplicabili -= numeroInversioniP;
+
+			Permutazione p(this->dimensione);
+
+			for (int k = 0; k < p.dimensione; k++) {
+				p.individuo[k] = this->individuo[k];
+			}
+
+			randomBS(p, nInvApplicabili, arrayInversioni);
+			nuovaPermutazione = *this;
 		}
 
 		
@@ -86,7 +103,7 @@ Permutazione Permutazione::operator*(const double f) {
 	return nuovaPermutazione;
 }
 
-Permutazione Permutazione::operator=(Permutazione& p) {
+Permutazione& Permutazione::operator=(Permutazione& p) {
 	memcpy(this->individuo, p.individuo, sizeof(unsigned short) * p.dimensione);
 	score = p.score;
 	return *this;
