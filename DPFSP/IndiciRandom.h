@@ -14,6 +14,6 @@ class IndiciRandom {
 	public:
 		IndiciRandom(unsigned short);
 		~IndiciRandom();
-		void generaIndici(unique_ptr<unsigned short[]>&, unsigned short);
+		void generaIndici(unsigned short[], unsigned short);
 };
 

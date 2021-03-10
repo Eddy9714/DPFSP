@@ -10,7 +10,7 @@ class ADE_DEP_DPFSP : public ADE_DEP {
 
 	public:
 		ADE_DEP_DPFSP(string);
-		unsigned int esegui(unsigned short, unsigned short, double);
+		unsigned int esegui(unsigned short, unsigned short, double, double, double);
 
 	private:
 		Permutazione** creaPopolazione(unsigned short);

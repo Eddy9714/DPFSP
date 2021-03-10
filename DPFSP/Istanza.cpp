@@ -12,7 +12,7 @@ Istanza::Istanza(string percorso) {
 	ifstream file(percorso);
 
 	if (file.is_open()) {
-		file >> macchine >> lavori >> fabbriche;
+		file >> lavori >> macchine >> fabbriche;
 
 		p = new unsigned int* [lavori];
 
@@ -20,8 +20,8 @@ Istanza::Istanza(string percorso) {
 			p[i] = new unsigned int[macchine];
 		}
 
-		for (int m = 0; m < macchine; m++) {
-			for (int i = 0; i < lavori; i++) {
+		for (int i = 0; i < lavori; i++) {
+			for (int m = 0; m < macchine; m++) {
 				file >> p[i][m] >> p[i][m];
 			}
 		}

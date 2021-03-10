@@ -15,6 +15,6 @@ class ADE_DEP {
 		virtual void selezionaPopolazione(Permutazione**, Permutazione**, unsigned short, double);
 		virtual unsigned int valutaIndividuo(Permutazione*) = 0;
 		virtual void stampa(Permutazione**, unsigned short) = 0;
-		unsigned int esegui(unsigned short, unsigned short, double);
+		unsigned int esegui(unsigned short, unsigned short, double, double, double);
 
 };

@@ -15,7 +15,7 @@ IndiciRandom::~IndiciRandom() {
 	delete random;
 }
 
-void IndiciRandom::generaIndici(unique_ptr<unsigned short[]>& risultato, unsigned short nIndiciGenerati) {
+void IndiciRandom::generaIndici(unsigned short risultato[], unsigned short nIndiciGenerati) {
 	if (nIndiciGenerati > dimensione) return;
 
 	unsigned short ran, tmp, dim;

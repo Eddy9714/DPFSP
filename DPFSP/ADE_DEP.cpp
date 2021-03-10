@@ -6,16 +6,24 @@
 
 using namespace std;
 
-unsigned int ADE_DEP::esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta) {
+unsigned int ADE_DEP::esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta, double Fmin, double Fmax) {
 	
 	// Crea e inizializza popolazione
 	Permutazione** popolazione = creaPopolazione(nIndividui);
 	Permutazione** popolazioneAlternativa = creaPopolazione(nIndividui);
 
+	double* vettoreF = new double[nIndividui];
+
 	inizializzaPopolazione(popolazione, nIndividui);
 
 	IndiciRandom r(nIndividui);
-	unique_ptr<unsigned short[]> treIndici = unique_ptr<unsigned short[]>(new unsigned short[3]);
+	Random ran;
+
+	for (unsigned short i = 0; i < nIndividui; i++) {
+		vettoreF[i] = ran.randDouble(Fmin, Fmax);
+	}
+
+	unsigned short treIndici[3];
 
 	
 	for (unsigned short i = 0; i < nIndividui; i++) {
@@ -31,31 +39,37 @@ unsigned int ADE_DEP::esegui(unsigned short nIndividui, unsigned short nGenerazi
 
 		for (unsigned short i = 0; i < nIndividui; i++) {
 
-			Random ran;
-			double F = ran.randDouble(0.0, 1.3);
-
 			r.generaIndici(treIndici, 3);
 
 			
 			Permutazione ris = *(popolazione[treIndici[0]]) + 
-				((*(popolazione[treIndici[1]]) - *(popolazione[treIndici[2]])) * F);
+				((*(popolazione[treIndici[1]]) - *(popolazione[treIndici[2]])) * vettoreF[i]);
 
 			*(popolazioneAlternativa[i]) = ris;
 			//Crossover
 			crossover(popolazione[i], popolazioneAlternativa[i]);
 
-
 			//Valutazione nuovi individui
 			if(popolazioneAlternativa[i]->score == 0)
-				popolazioneAlternativa[i]->score = valutaIndividuo(popolazioneAlternativa[i]);
-			
+				popolazioneAlternativa[i]->score = valutaIndividuo(popolazioneAlternativa[i]);			
 		}
 
 		selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta);
+
+		for (unsigned short i = 0; i < nIndividui; i++) {
+
+			if (ran.randDouble(0, 1) < 0.1) {
+				double pesoRandom = ran.randDouble(0, 1);
+				vettoreF[i] = Fmin + pesoRandom * Fmax;
+			}
+
+		}
 	}
 
 	eliminaPopolazione(popolazione, nIndividui);
 	eliminaPopolazione(popolazioneAlternativa, nIndividui);
+
+	delete[] vettoreF;
 
 	return 0;
 }

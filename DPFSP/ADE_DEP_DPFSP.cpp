@@ -28,6 +28,8 @@ void ADE_DEP_DPFSP::eliminaPopolazione(Permutazione** popolazione, unsigned shor
 
 void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned short nIndividui) {
 
+	Random r;
+
 	for (int i = 0; i < nIndividui; i++) {
 
 		for (int j = 0; j < istanza.lavori + istanza.fabbriche - 1; j++) {
@@ -64,16 +66,16 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 			for (unsigned short j = 0; j < istanza.macchine; j++) {
 
 				if (k == 0 && j == 0) {
-					Cm[j] = istanza.p[p->individuo[k]][j];
+					Cm[j] = istanza.p[p->individuo[0]][0];
 				}
 				else if (k != 0 && j != 0) {
 					Cm[j] = istanza.p[p->individuo[k]][j] + max(Cm[j - 1], Cm[j]);
 				}
 				else if (k == 0 && j != 0) {
-					Cm[j] = istanza.p[p->individuo[k]][j] + Cm[j - 1];
+					Cm[j] = istanza.p[p->individuo[0]][j] + Cm[j - 1];
 				}
 				else {
-					Cm[j] = istanza.p[p->individuo[k]][j] + Cm[j];
+					Cm[0] = istanza.p[p->individuo[k]][0] + Cm[0];
 				}
 			}
 		}
@@ -82,8 +84,9 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 	return max(Cmax, Cm[istanza.macchine - 1]);
 }
 
-unsigned int ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta) {
-	return ADE_DEP::esegui(nIndividui, nGenerazioni, theta);
+unsigned int ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta, 
+	double Fmin, double Fmax) {
+	return ADE_DEP::esegui(nIndividui, nGenerazioni, theta, Fmin, Fmax);
 }
 
 void ADE_DEP_DPFSP::stampa(Permutazione** popolazione, unsigned short nIndividui) {
