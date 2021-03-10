@@ -22,5 +22,5 @@ class Permutazione {
 
 		unsigned short* individuo;
 		const unsigned short dimensione;
-		double score = 0;
+		unsigned int score = 0;
 };

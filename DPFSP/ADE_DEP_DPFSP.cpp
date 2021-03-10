@@ -36,8 +36,6 @@ void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned 
 			popolazione[i]->individuo[j] = j;
 		}
 
-		Random r;
-
 		for (int k = istanza.lavori + istanza.fabbriche - 2; k > 0; k--) {
 			int valoreRandom = r.randIntU(0, k);
 
@@ -53,26 +51,25 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 	auto Cm = make_unique<unsigned int[]>(istanza.macchine);
 
 	unsigned int Cmax = 0;
+	short c = 0;
 
-	for (unsigned short k = 0; k < istanza.lavori + istanza.fabbriche - 1; k++) {
+	for (unsigned short k = 0; k < istanza.lavori + istanza.fabbriche - 1; k++, c++) {
 
 		if (p->individuo[k] >= istanza.lavori) {
 			Cmax = max(Cmax, Cm[istanza.macchine - 1]);
-			for (unsigned short k = 0; k < istanza.macchine; k++) {
-				Cm[k] = 0;
-			}
+			c = -1;
 		}
 		else {
 			for (unsigned short j = 0; j < istanza.macchine; j++) {
 
-				if (k == 0 && j == 0) {
-					Cm[j] = istanza.p[p->individuo[0]][0];
+				if (c == 0 && j == 0) {
+					Cm[j] = istanza.p[p->individuo[k]][0];
 				}
-				else if (k != 0 && j != 0) {
+				else if (c != 0 && j != 0) {
 					Cm[j] = istanza.p[p->individuo[k]][j] + max(Cm[j - 1], Cm[j]);
 				}
-				else if (k == 0 && j != 0) {
-					Cm[j] = istanza.p[p->individuo[0]][j] + Cm[j - 1];
+				else if (c == 0 && j != 0) {
+					Cm[j] = istanza.p[p->individuo[k]][j] + Cm[j - 1];
 				}
 				else {
 					Cm[0] = istanza.p[p->individuo[k]][0] + Cm[0];
@@ -94,7 +91,7 @@ void ADE_DEP_DPFSP::stampa(Permutazione** popolazione, unsigned short nIndividui
 	for (int i = 0; i < nIndividui; i++) {
 
 		for (int j = 0; j < istanza.lavori + istanza.fabbriche - 1; j++) {
-			cout << popolazione[i]->individuo[j] << "\t";
+			cout << popolazione[i]->individuo[j] << " ";
 		}
 
 		cout << ":" << "\t" << popolazione[i]->score << endl;

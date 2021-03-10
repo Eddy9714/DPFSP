@@ -35,19 +35,18 @@ unsigned int ADE_DEP::esegui(unsigned short nIndividui, unsigned short nGenerazi
 		cout << "Generazione: " << g << endl;
 		cout << endl;
 
-		stampa(popolazione, nIndividui);
+		//stampa(popolazione, nIndividui);
 
 		for (unsigned short i = 0; i < nIndividui; i++) {
 
 			r.generaIndici(treIndici, 3);
 
-			
 			Permutazione ris = *(popolazione[treIndici[0]]) + 
 				((*(popolazione[treIndici[1]]) - *(popolazione[treIndici[2]])) * vettoreF[i]);
 
 			*(popolazioneAlternativa[i]) = ris;
 			//Crossover
-			crossover(popolazione[i], popolazioneAlternativa[i]);
+			//crossover(popolazione[i], popolazioneAlternativa[i]);
 
 			//Valutazione nuovi individui
 			if(popolazioneAlternativa[i]->score == 0)
@@ -66,12 +65,18 @@ unsigned int ADE_DEP::esegui(unsigned short nIndividui, unsigned short nGenerazi
 		}
 	}
 
+	unsigned int migliorPunteggio = UINT32_MAX;
+
+	for (unsigned int i = 0; i < nIndividui; i++) {
+		migliorPunteggio = min(migliorPunteggio, popolazione[i]->score);
+	}
+
 	eliminaPopolazione(popolazione, nIndividui);
 	eliminaPopolazione(popolazioneAlternativa, nIndividui);
 
 	delete[] vettoreF;
 
-	return 0;
+	return migliorPunteggio;
 }
 
 void ADE_DEP::crossover(Permutazione* pi, Permutazione* vi) {
