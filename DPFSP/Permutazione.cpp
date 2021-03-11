@@ -7,9 +7,14 @@ Permutazione::Permutazione(const Permutazione& p) : dimensione(p.dimensione) {
 	individuo = new unsigned short[p.dimensione];
 	std::memcpy(individuo, p.individuo, dimensione * sizeof(unsigned short));
 	score = p.score;
+	seed = p.seed;
 }
 
-Permutazione::Permutazione(unsigned short d) : dimensione(d){
+Permutazione::Permutazione(unsigned short d, unsigned long long seed) : dimensione(d), seed(seed) {
+	individuo = new unsigned short[d];
+}
+
+Permutazione::Permutazione(unsigned short d) : dimensione(d) {
 	individuo = new unsigned short[d];
 }
 
@@ -17,6 +22,11 @@ void Permutazione::identita() {
 	for (int k = 0; k < dimensione; k++) {
 		individuo[k] = k;
 	}
+}
+
+Permutazione::Permutazione(unsigned short* p, unsigned short d, unsigned long long seed) : dimensione(d), seed(seed) {
+	individuo = new unsigned short[dimensione];
+	std::memcpy(individuo, p, dimensione * sizeof(unsigned short));
 }
 
 Permutazione::Permutazione(unsigned short* p, unsigned short d) : dimensione(d) {
@@ -29,7 +39,7 @@ Permutazione::~Permutazione() {
 }
 
 Permutazione Permutazione::operator+(Permutazione& p) {
-	Permutazione nuovaPermutazione(dimensione);
+	Permutazione nuovaPermutazione(dimensione, this->seed + p.seed + 8103847462ULL);
 
 	for (int k = 0; k < dimensione; k++) {
 		nuovaPermutazione.individuo[k] = this->individuo[p.individuo[k]];
@@ -40,6 +50,8 @@ Permutazione Permutazione::operator+(Permutazione& p) {
 
 Permutazione Permutazione::operator!() {
 	Permutazione nuovaPermutazione(dimensione);
+
+	if (seed > 0) seed + 1840284702ULL;
 
 	for (int k = 0; k < dimensione; k++) {
 		nuovaPermutazione.individuo[this->individuo[k]] = k;
@@ -56,6 +68,8 @@ Permutazione Permutazione::operator-(Permutazione& p) {
 Permutazione Permutazione::operator*(const double f) {
 	Permutazione nuovaPermutazione(dimensione);
 
+	if (seed > 0) nuovaPermutazione.seed = seed + 980849103648ULL;
+
 	if (f == 1.) {
 		std::memcpy(nuovaPermutazione.individuo, this->individuo, sizeof(unsigned short) * dimensione);
 	}
@@ -68,7 +82,7 @@ Permutazione Permutazione::operator*(const double f) {
 		unsigned int nInvApplicabili = (unsigned int)ceil(f * numeroInversioniP);
 
 		if (f < 1.) {
-			Permutazione copia(this->individuo, this->dimensione);
+			Permutazione copia(this->individuo, this->dimensione, this->seed);
 			copia = !copia;
 			randomBS(copia, nInvApplicabili, arrayInversioni);
 			nuovaPermutazione.identita();
@@ -78,6 +92,8 @@ Permutazione Permutazione::operator*(const double f) {
 			nInvApplicabili -= numeroInversioniP;
 
 			Permutazione p(this->dimensione);
+
+			if (seed > 0) p.seed = seed + 19581005720294ULL;
 
 			for (int k = 0; k < p.dimensione; k++) {
 				p.individuo[k] = this->dimensione - 1 - this->individuo[k];
@@ -103,16 +119,16 @@ Permutazione Permutazione::operator*(const double f) {
 
 Permutazione& Permutazione::operator=(Permutazione& p) {
 
-	Permutazione* individuoConvertito = static_cast<Permutazione*>(&p);
-
-	memcpy(this->individuo, individuoConvertito->individuo, sizeof(unsigned short) * individuoConvertito->dimensione);
+	memcpy(this->individuo, p.individuo, sizeof(unsigned short) * p.dimensione);
 	score = p.score;
+	seed = p.seed;
+
 	return *this;
 }
 
 void Permutazione::randomBS(Permutazione& p, unsigned int limiteTrasposizioni, unsigned short* risultato) {
 
-	Permutazione pCopia(p.individuo, p.dimensione);
+	Permutazione pCopia(p.individuo, p.dimensione, p.seed);
 	
 	unsigned short* zeta = new unsigned short[p.dimensione - 1];
 	unsigned short cursoreZeta = 0;
@@ -126,6 +142,9 @@ void Permutazione::randomBS(Permutazione& p, unsigned int limiteTrasposizioni, u
 	}
 
 	Random r;
+	
+	if (seed > 0) r.impostaSeed(seed + 54145914974281ULL);
+
 	unsigned short random, randomZeta, temp;
 
 	while (cursoreZeta > 0 && contatoreTrasposizioni < limiteTrasposizioni) {

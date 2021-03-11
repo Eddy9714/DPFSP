@@ -12,6 +12,10 @@ class Random {
 			gen.seed(rd());
 		}
 
+		Random(unsigned long long seed) {
+			gen.seed(seed);
+		}
+
 		int randIntU(int a, int b) {
 			uniform_int_distribution<int> distrib(a, b);
 			return distrib(gen);
@@ -20,5 +24,9 @@ class Random {
 		double randDouble(double a, double b) {
 			uniform_real_distribution<double> distrib(a, b);
 			return distrib(gen);
+		}
+
+		void impostaSeed(unsigned long seed) {
+			gen.seed(seed);
 		}
 };

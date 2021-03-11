@@ -8,26 +8,31 @@ using namespace std;
 template <class T> class ADE {
 
 	protected:
-		virtual void creaPopolazione(T**, unsigned short) = 0;
-		virtual void inizializzaPopolazione(T**, unsigned short) = 0;
-		virtual void crossover(T*, T*) = 0;
+		virtual void creaPopolazione(T**, unsigned short, unsigned long long) = 0;
+		virtual void inizializzaPopolazione(T**, unsigned short, unsigned long long) = 0;
+		virtual void crossover(T*, T*, unsigned long long) = 0;
 		virtual unsigned int valutaIndividuo(T*) = 0;
 		virtual void stampa(T**, unsigned short) = 0;
 
-		unsigned int esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta, double Fmin, double Fmax) {
+		T esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta, double Fmin, double Fmax, unsigned long long seed) {
 
 			T** popolazione = new T * [nIndividui];
 			T** popolazioneAlternativa = new T * [nIndividui];
 
-			creaPopolazione(popolazione, nIndividui);
-			creaPopolazione(popolazioneAlternativa, nIndividui);
+			creaPopolazione(popolazione, nIndividui, seed);
+			creaPopolazione(popolazioneAlternativa, nIndividui, seed);
 
 			double* vettoreF = new double[nIndividui];
 
-			inizializzaPopolazione(popolazione, nIndividui);
+			inizializzaPopolazione(popolazione, nIndividui, seed);
 
 			IndiciRandom r(nIndividui);
+
+			if (seed > 0) r.impostaSeed(seed + 19048475920238ULL);
+
 			Random ran;
+
+			if (seed > 0) ran.impostaSeed(seed + 841094662892ULL);
 
 			for (unsigned short i = 0; i < nIndividui; i++) {
 				vettoreF[i] = ran.randDouble(Fmin, Fmax);
@@ -57,14 +62,14 @@ template <class T> class ADE {
 						((*(popolazione[treIndici[1]]) - *(popolazione[treIndici[2]])) * vettoreF[i]);
 
 					//Crossover
-					crossover(popolazione[i], popolazioneAlternativa[i]);
+					crossover(popolazione[i], popolazioneAlternativa[i], seed);
 
 					//Valutazione nuovi individui
 					if (popolazioneAlternativa[i]->score == 0)
 						popolazioneAlternativa[i]->score = valutaIndividuo(popolazioneAlternativa[i]);
 				}
 
-				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta);
+				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, seed);
 
 				for (unsigned short i = 0; i < nIndividui; i++) {
 
@@ -78,10 +83,18 @@ template <class T> class ADE {
 			}
 
 			unsigned int migliorPunteggio = UINT32_MAX;
+			unsigned int indice = -1;
 
 			for (unsigned int i = 0; i < nIndividui; i++) {
-				migliorPunteggio = min(migliorPunteggio, popolazione[i]->score);
+
+				if (migliorPunteggio > popolazione[i]->score) {
+					migliorPunteggio = popolazione[i]->score;
+					indice = i;
+				}
+					
 			}
+
+			T migliorIndividuo = *(popolazione[indice]);
 
 			for (unsigned int i = 0; i < nIndividui; i++) {
 				delete popolazione[i];
@@ -93,13 +106,17 @@ template <class T> class ADE {
 
 			delete[] vettoreF;
 
-			return migliorPunteggio;
+			return migliorIndividuo;
 		};
 
 		virtual void selezionaPopolazione(T** popolazione, T** popolazioneAlternativa,
-			unsigned short nIndividui, double theta) {
+			unsigned short nIndividui, double theta, unsigned long long seed) {
 
 			Random r;
+
+			if(seed > 0)
+				r.impostaSeed(seed + 4958152750925591ULL);
+
 			double delta;
 
 			for (unsigned short i = 0; i < nIndividui; i++) {
