@@ -140,12 +140,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "DPFSP/ADE_DEP.cpp",
+			"path" : "DPFSP/ADE.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "DPFSP/ADE_DEP.h",
+			"path" : "DPFSP/ADE.h",
 			"sourceGroupIndex" : 1
 		},
 		{

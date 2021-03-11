@@ -65,7 +65,7 @@ Permutazione Permutazione::operator*(const double f) {
 
 		unsigned int numeroInversioniP = numeroInversioni(*this);
 
-		unsigned int nInvApplicabili = (unsigned int) ceil(f * numeroInversioniP);
+		unsigned int nInvApplicabili = (unsigned int)ceil(f * numeroInversioniP);
 
 		if (f < 1.) {
 			Permutazione copia(this->individuo, this->dimensione);
@@ -80,31 +80,32 @@ Permutazione Permutazione::operator*(const double f) {
 			Permutazione p(this->dimensione);
 
 			for (int k = 0; k < p.dimensione; k++) {
-				p.individuo[k] = this->individuo[k];
+				p.individuo[k] = this->dimensione - 1 - this->individuo[k];
 			}
 
 			randomBS(p, nInvApplicabili, arrayInversioni);
 			nuovaPermutazione = *this;
 		}
 
-		
+
 		for (unsigned int k = 0; k < nInvApplicabili; k++) {
 			unsigned short temp = nuovaPermutazione.individuo[arrayInversioni[k]];
 			nuovaPermutazione.individuo[arrayInversioni[k]] = nuovaPermutazione.individuo[arrayInversioni[k] + 1];
 			nuovaPermutazione.individuo[arrayInversioni[k] + 1] = temp;
 		}
-		
+
 
 		delete[] arrayInversioni;
 	}
-
-	//caso f negativo TODO
 
 	return nuovaPermutazione;
 }
 
 Permutazione& Permutazione::operator=(Permutazione& p) {
-	memcpy(this->individuo, p.individuo, sizeof(unsigned short) * p.dimensione);
+
+	Permutazione* individuoConvertito = static_cast<Permutazione*>(&p);
+
+	memcpy(this->individuo, individuoConvertito->individuo, sizeof(unsigned short) * individuoConvertito->dimensione);
 	score = p.score;
 	return *this;
 }

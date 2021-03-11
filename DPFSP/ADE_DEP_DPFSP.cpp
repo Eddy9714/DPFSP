@@ -1,29 +1,15 @@
 #include "ADE_DEP_DPFSP.h"
-#include "Random.h"
 #include <iostream>
 
 using namespace std;
 
 ADE_DEP_DPFSP::ADE_DEP_DPFSP(string percorso) : istanza(Istanza(percorso)) {}
 
-Permutazione** ADE_DEP_DPFSP::creaPopolazione(unsigned short nIndividui) {
+void ADE_DEP_DPFSP::creaPopolazione(Permutazione** popolazione, unsigned short nIndividui) {
 
-	Permutazione** popolazione = new Permutazione* [nIndividui];
-
-	for (int k = 0; k < nIndividui; k++) {
+	for (unsigned int k = 0; k < nIndividui; k++) {
 		popolazione[k] = new Permutazione(istanza.lavori + istanza.fabbriche - 1);
 	}
-
-	return popolazione;
-}
-
-void ADE_DEP_DPFSP::eliminaPopolazione(Permutazione** popolazione, unsigned short nIndividui) {
-
-	for (int k = 0; k < nIndividui; k++) {
-		delete popolazione[k];
-	}
-	
-	delete[] popolazione;
 }
 
 void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned short nIndividui) {
@@ -81,9 +67,13 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 	return max(Cmax, Cm[istanza.macchine - 1]);
 }
 
+void ADE_DEP_DPFSP::crossover(Permutazione* i1, Permutazione* i2) {
+
+}
+
 unsigned int ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta, 
 	double Fmin, double Fmax) {
-	return ADE_DEP::esegui(nIndividui, nGenerazioni, theta, Fmin, Fmax);
+	return ADE::esegui(nIndividui, nGenerazioni, theta, Fmin, Fmax);
 }
 
 void ADE_DEP_DPFSP::stampa(Permutazione** popolazione, unsigned short nIndividui) {
@@ -98,5 +88,4 @@ void ADE_DEP_DPFSP::stampa(Permutazione** popolazione, unsigned short nIndividui
 	}
 
 	cout << endl;
-
 }
