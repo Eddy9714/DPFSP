@@ -45,6 +45,8 @@ template <class T> class ADE {
 				popolazione[i]->score = valutaIndividuo(popolazione[i]);
 			}
 
+			
+
 			for (unsigned short g = 0; g < nGenerazioni; g++) {
 
 				cout << "Generazione: " << g << endl;
@@ -52,14 +54,17 @@ template <class T> class ADE {
 
 				//stampa(popolazione, nIndividui);
 
-
 				for (unsigned short i = 0; i < nIndividui; i++) {
 
 					r.generaIndici(treIndici, 3);
 
+					T temp = *(popolazione[treIndici[1]]);
 
-					*(popolazioneAlternativa[i]) = *(popolazione[treIndici[0]]) +
-						((*(popolazione[treIndici[1]]) - *(popolazione[treIndici[2]])) * vettoreF[i]);
+					temp.differenza(popolazione[treIndici[2]]);
+					temp.prodotto(vettoreF[i]);
+					temp.somma(popolazione[treIndici[0]]);
+
+					*(popolazioneAlternativa[i]) = temp;
 
 					//Crossover
 					crossover(popolazione[i], popolazioneAlternativa[i], seed);

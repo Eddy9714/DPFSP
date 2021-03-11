@@ -38,52 +38,52 @@ Permutazione::~Permutazione() {
 	delete[] individuo;
 }
 
-Permutazione Permutazione::operator+(Permutazione& p) {
-	Permutazione nuovaPermutazione(dimensione, this->seed + p.seed + 8103847462ULL);
+void Permutazione::somma(Permutazione* p) {
+	unsigned short* individuo = new unsigned short[dimensione];
 
 	for (int k = 0; k < dimensione; k++) {
-		nuovaPermutazione.individuo[k] = this->individuo[p.individuo[k]];
+		individuo[k] = this->individuo[p->individuo[k]];
 	}
 
-	return nuovaPermutazione;
+	delete[] this->individuo;
+	this->individuo = individuo;
 }
 
-Permutazione Permutazione::operator!() {
-	Permutazione nuovaPermutazione(dimensione);
+void Permutazione::inverti(){
 
-	if (seed > 0) seed + 1840284702ULL;
+	unsigned short* individuo = new unsigned short[dimensione];
 
 	for (int k = 0; k < dimensione; k++) {
-		nuovaPermutazione.individuo[this->individuo[k]] = k;
+		individuo[this->individuo[k]] = k;
 	}
 
-	return nuovaPermutazione;
+	delete[] this->individuo;
+	this->individuo = individuo;
 }
 
-Permutazione Permutazione::operator-(Permutazione& p) {
-	Permutazione permutazioneInversa = !p;
-	return permutazioneInversa + *this;
+void Permutazione::differenza(Permutazione* p) {
+	Permutazione copia(*p);
+	copia.inverti();
+	this->somma(&copia);
 }
 
-Permutazione Permutazione::operator*(const double f) {
-	Permutazione nuovaPermutazione(dimensione);
+void Permutazione::prodotto(double F) {
 
-	if (seed > 0) nuovaPermutazione.seed = seed + 980849103648ULL;
+	if (F > 0) {
 
-	if (f == 1.) {
-		std::memcpy(nuovaPermutazione.individuo, this->individuo, sizeof(unsigned short) * dimensione);
-	}
-	else if (f > 0) {
+		Permutazione nuovaPermutazione(dimensione);
+		if (seed > 0) nuovaPermutazione.seed = seed + 980849103648ULL;
+
 		unsigned int numeroInversioniMassime = dimensione * (dimensione - 1) / 2;
 		unsigned short* arrayInversioni = new unsigned short[numeroInversioniMassime];
 
 		unsigned int numeroInversioniP = numeroInversioni(*this);
 
-		unsigned int nInvApplicabili = (unsigned int)ceil(f * numeroInversioniP);
+		unsigned int nInvApplicabili = (unsigned int)ceil(F * numeroInversioniP);
 
-		if (f < 1.) {
-			Permutazione copia(this->individuo, this->dimensione, this->seed);
-			copia = !copia;
+		if (F < 1.) {
+			Permutazione copia(*this);
+			copia.inverti();
 			randomBS(copia, nInvApplicabili, arrayInversioni);
 			nuovaPermutazione.identita();
 		}
@@ -110,11 +110,9 @@ Permutazione Permutazione::operator*(const double f) {
 			nuovaPermutazione.individuo[arrayInversioni[k] + 1] = temp;
 		}
 
-
 		delete[] arrayInversioni;
+		*this = nuovaPermutazione;
 	}
-
-	return nuovaPermutazione;
 }
 
 Permutazione& Permutazione::operator=(Permutazione& p) {

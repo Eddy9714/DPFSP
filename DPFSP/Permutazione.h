@@ -14,13 +14,13 @@ class Permutazione {
 		Permutazione(const Permutazione& p);
 		~Permutazione();
 
-		Permutazione operator+(Permutazione&);
-		Permutazione operator-(Permutazione&);
-		Permutazione operator*(const double);
-		Permutazione& operator=(Permutazione&);
-		Permutazione operator!();
-		
+		void somma(Permutazione*);
+		void differenza(Permutazione*);
+		void prodotto(double);
+		void inverti();
 		void identita();
+
+		Permutazione& operator=(Permutazione&);
 
 		unsigned short* individuo;
 		const unsigned short dimensione;
