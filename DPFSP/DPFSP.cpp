@@ -58,6 +58,8 @@ int main(int argc, char* argv[])
 
 	const auto tempoIniziale = orologio::now();
 
+	//percorsoFile = "C:/Users/edu4r/Desktop/DPFSP/DPFSP_Small/2/I_2_4_3_4.txt";
+
 	ADE_DEP_DPFSP adeDep(percorsoFile);
 	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, nGenerazioni, theta, 0.1, Fmax, seed);
 
