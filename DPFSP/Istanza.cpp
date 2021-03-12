@@ -25,9 +25,12 @@ Istanza::Istanza(string percorso) {
 				file >> p[i][m] >> p[i][m];
 			}
 		}
+
+		file.close();
 	}
 	else {
-		cerr << "File non trovato!";
+		cerr << "File non trovato!" << endl << endl;
+		exit(-2);
 	}
 }
 

@@ -49,7 +49,7 @@ void Permutazione::somma(Permutazione* p) {
 	this->individuo = individuo;
 }
 
-void Permutazione::inverti(){
+void Permutazione::inversa(){
 
 	unsigned short* individuo = new unsigned short[dimensione];
 
@@ -63,7 +63,7 @@ void Permutazione::inverti(){
 
 void Permutazione::differenza(Permutazione* p) {
 	Permutazione copia(*p);
-	copia.inverti();
+	copia.inversa();
 	this->somma(&copia);
 }
 
@@ -75,15 +75,19 @@ void Permutazione::prodotto(double F) {
 		if (seed > 0) nuovaPermutazione.seed = seed + 980849103648ULL;
 
 		unsigned int numeroInversioniMassime = dimensione * (dimensione - 1) / 2;
-		unsigned short* arrayInversioni = new unsigned short[numeroInversioniMassime];
 
 		unsigned int numeroInversioniP = numeroInversioni(*this);
 
 		unsigned int nInvApplicabili = (unsigned int)ceil(F * numeroInversioniP);
 
+		unsigned short* arrayInversioni;
+
 		if (F < 1.) {
 			Permutazione copia(*this);
-			copia.inverti();
+			copia.inversa();
+
+			arrayInversioni = new unsigned short[nInvApplicabili];
+
 			randomBS(copia, nInvApplicabili, arrayInversioni);
 			nuovaPermutazione.identita();
 		}
@@ -99,10 +103,11 @@ void Permutazione::prodotto(double F) {
 				p.individuo[k] = this->dimensione - 1 - this->individuo[k];
 			}
 
+			arrayInversioni = new unsigned short[nInvApplicabili];
+
 			randomBS(p, nInvApplicabili, arrayInversioni);
 			nuovaPermutazione = *this;
 		}
-
 
 		for (unsigned int k = 0; k < nInvApplicabili; k++) {
 			unsigned short temp = nuovaPermutazione.individuo[arrayInversioni[k]];
@@ -110,7 +115,8 @@ void Permutazione::prodotto(double F) {
 			nuovaPermutazione.individuo[arrayInversioni[k] + 1] = temp;
 		}
 
-		delete[] arrayInversioni;
+		if(arrayInversioni) delete[] arrayInversioni;
+
 		*this = nuovaPermutazione;
 	}
 }
@@ -184,5 +190,12 @@ unsigned int Permutazione::numeroInversioni(Permutazione& p) {
 	}
 
 	return inv;
+}
+
+void Permutazione::stampa() {
+	for (unsigned i = 0; i < dimensione; i++) {
+		cout << individuo[i] << " ";
+	}
+	cout << endl;
 }
 

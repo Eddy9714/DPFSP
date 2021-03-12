@@ -17,8 +17,9 @@ class Permutazione {
 		void somma(Permutazione*);
 		void differenza(Permutazione*);
 		void prodotto(double);
-		void inverti();
+		void inversa();
 		void identita();
+		void stampa();
 
 		Permutazione& operator=(Permutazione&);
 

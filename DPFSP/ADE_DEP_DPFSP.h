@@ -2,6 +2,7 @@
 
 #include "ADE.h"
 #include "Istanza.h"
+#include "Permutazione.h"
 #include <string>
 
 using namespace std;
@@ -11,6 +12,7 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 	public:
 		ADE_DEP_DPFSP(string);
 		Permutazione esegui(unsigned short, unsigned short, double, double, double, unsigned long long);
+		const Istanza istanza;
 
 	private:
 		void creaPopolazione(Permutazione**, unsigned short, unsigned long long);
@@ -18,6 +20,4 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 		void crossover(Permutazione*, Permutazione*, unsigned long long);
 		void stampa(Permutazione**, unsigned short);
 		unsigned int valutaIndividuo(Permutazione*);
-
-		const Istanza istanza;
 };

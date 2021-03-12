@@ -1,7 +1,5 @@
 #pragma once
 #include "IndiciRandom.h"
-#include "Permutazione.h"
-#include <memory>
 
 using namespace std;
 
@@ -49,8 +47,8 @@ template <class T> class ADE {
 
 			for (unsigned short g = 0; g < nGenerazioni; g++) {
 
-				cout << "Generazione: " << g << endl;
-				cout << endl;
+				if (g > 0) cout << "\r";
+				cout << "Completamento: " << (int)(((g+1) / (double)nGenerazioni) * 100) << "%";
 
 				//stampa(popolazione, nIndividui);
 
@@ -86,6 +84,8 @@ template <class T> class ADE {
 				}
 
 			}
+
+			cout << endl << endl;
 
 			unsigned int migliorPunteggio = UINT32_MAX;
 			unsigned int indice = -1;
