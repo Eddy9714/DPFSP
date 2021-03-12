@@ -56,13 +56,19 @@ template <class T> class ADE {
 
 					r.generaIndici(treIndici, 3);
 
+					if (seed > 0) {
+						popolazione[treIndici[0]]->seed = max(1ULL, popolazione[treIndici[0]]->seed + g);
+						popolazione[treIndici[1]]->seed = max(1ULL, popolazione[treIndici[1]]->seed + g);
+						popolazione[treIndici[2]]->seed = max(1ULL, popolazione[treIndici[2]]->seed + g);
+					}
+
 					T temp = *(popolazione[treIndici[1]]);
 
 					temp.differenza(popolazione[treIndici[2]]);
 					temp.prodotto(vettoreF[i]);
 					temp.somma(popolazione[treIndici[0]]);
 
-					*(popolazioneAlternativa[i]) = temp;
+					popolazioneAlternativa[i]->scambia(&temp);
 
 					//Crossover
 					crossover(popolazione[i], popolazioneAlternativa[i], seed);
@@ -129,9 +135,7 @@ template <class T> class ADE {
 				delta = (popolazioneAlternativa[i]->score - popolazione[i]->score) / popolazione[i]->score;
 
 				if (popolazioneAlternativa[i]->score < popolazione[i]->score || r.randDouble(0, 1) < max(theta - delta, 0.)) {
-					T* tmp = popolazione[i];
-					popolazione[i] = popolazioneAlternativa[i];
-					popolazioneAlternativa[i] = tmp;
+					popolazione[i]->scambia(popolazioneAlternativa[i]);
 				}
 			}
 		};

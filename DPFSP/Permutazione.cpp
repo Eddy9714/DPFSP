@@ -51,6 +51,8 @@ void Permutazione::somma(Permutazione* p) {
 
 void Permutazione::inversa(){
 
+	seed = max(1ULL, -seed);
+
 	unsigned short* individuo = new unsigned short[dimensione];
 
 	for (int k = 0; k < dimensione; k++) {
@@ -62,6 +64,9 @@ void Permutazione::inversa(){
 }
 
 void Permutazione::differenza(Permutazione* p) {
+
+	seed = max(1ULL, this->seed - p->seed);
+
 	Permutazione copia(*p);
 	copia.inversa();
 	this->somma(&copia);
@@ -69,11 +74,9 @@ void Permutazione::differenza(Permutazione* p) {
 
 void Permutazione::prodotto(double F) {
 
+	this->seed = max(1ULL, (unsigned long long)((1+F) * this->seed));
+
 	if (F > 0) {
-
-		Permutazione nuovaPermutazione(dimensione);
-		if (seed > 0) nuovaPermutazione.seed = seed + 980849103648ULL;
-
 		unsigned int numeroInversioniMassime = dimensione * (dimensione - 1) / 2;
 
 		unsigned int numeroInversioniP = numeroInversioni(*this);
@@ -89,15 +92,13 @@ void Permutazione::prodotto(double F) {
 			arrayInversioni = new unsigned short[nInvApplicabili];
 
 			randomBS(copia, nInvApplicabili, arrayInversioni);
-			nuovaPermutazione.identita();
+			this->identita();
 		}
 		else {
 			nInvApplicabili = min(numeroInversioniMassime, nInvApplicabili);
 			nInvApplicabili -= numeroInversioniP;
 
 			Permutazione p(this->dimensione);
-
-			if (seed > 0) p.seed = seed + 19581005720294ULL;
 
 			for (int k = 0; k < p.dimensione; k++) {
 				p.individuo[k] = this->dimensione - 1 - this->individuo[k];
@@ -106,28 +107,39 @@ void Permutazione::prodotto(double F) {
 			arrayInversioni = new unsigned short[nInvApplicabili];
 
 			randomBS(p, nInvApplicabili, arrayInversioni);
-			nuovaPermutazione = *this;
 		}
 
 		for (unsigned int k = 0; k < nInvApplicabili; k++) {
-			unsigned short temp = nuovaPermutazione.individuo[arrayInversioni[k]];
-			nuovaPermutazione.individuo[arrayInversioni[k]] = nuovaPermutazione.individuo[arrayInversioni[k] + 1];
-			nuovaPermutazione.individuo[arrayInversioni[k] + 1] = temp;
+			unsigned short temp = this->individuo[arrayInversioni[k]];
+			this->individuo[arrayInversioni[k]] = this->individuo[arrayInversioni[k] + 1];
+			this->individuo[arrayInversioni[k] + 1] = temp;
 		}
 
 		if(arrayInversioni) delete[] arrayInversioni;
-
-		*this = nuovaPermutazione;
 	}
 }
 
 Permutazione& Permutazione::operator=(Permutazione& p) {
-
 	memcpy(this->individuo, p.individuo, sizeof(unsigned short) * p.dimensione);
 	score = p.score;
 	seed = p.seed;
 
 	return *this;
+}
+
+void Permutazione::scambia(Permutazione* p) {
+	unsigned short* tmpIndividuo = this->individuo;
+	unsigned int tmpScore = this->score;
+	unsigned long long tmpSeed = this->seed;
+
+	this->individuo = p->individuo;
+	p->individuo = tmpIndividuo;
+
+	this->score = p->score;
+	p->score = tmpScore;
+
+	this->seed = p->seed;
+	p->seed = tmpSeed;
 }
 
 void Permutazione::randomBS(Permutazione& p, unsigned int limiteTrasposizioni, unsigned short* risultato) {

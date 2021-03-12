@@ -9,7 +9,7 @@ void ADE_DEP_DPFSP::creaPopolazione(Permutazione** popolazione, unsigned short n
 
 	for (unsigned int k = 0; k < nIndividui; k++) {
 		if(seed > 0)
-			popolazione[k] = new Permutazione(istanza.lavori + istanza.fabbriche - 1, max(seed + k, 1ULL));
+			popolazione[k] = new Permutazione(istanza.lavori + istanza.fabbriche - 1, max(seed + 2ULL*k + 1746184ULL, 1ULL));
 		else 
 			popolazione[k] = new Permutazione(istanza.lavori + istanza.fabbriche - 1);
 	}
@@ -83,8 +83,8 @@ void ADE_DEP_DPFSP::crossover(Permutazione* i1, Permutazione* i2, unsigned long 
 	p1.score = valutaIndividuo(&p1);
 	p2.score = valutaIndividuo(&p2);
 
-	if (p1.score >= p2.score) *i2 = p1;
-	else *i2 = p2;
+	if (p1.score >= p2.score) i2->scambia(&p1);
+	else i2->scambia(&p2);
 }
 
 void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazione* ris) {

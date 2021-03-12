@@ -20,6 +20,7 @@ class Permutazione {
 		void inversa();
 		void identita();
 		void stampa();
+		void scambia(Permutazione*);
 
 		Permutazione& operator=(Permutazione&);
 
