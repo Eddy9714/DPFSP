@@ -9,6 +9,7 @@ template <class T> class ADE {
 		virtual void creaPopolazione(T**, unsigned short, unsigned long long) = 0;
 		virtual void inizializzaPopolazione(T**, unsigned short, unsigned long long) = 0;
 		virtual void crossover(T*, T*, unsigned long long) = 0;
+		virtual void ricercaLocale(T**) = 0;
 		virtual unsigned int valutaIndividuo(T*) = 0;
 		virtual void stampa(T**, unsigned short) = 0;
 
@@ -43,8 +44,6 @@ template <class T> class ADE {
 				popolazione[i]->score = valutaIndividuo(popolazione[i]);
 			}
 
-			
-
 			for (unsigned short g = 0; g < nGenerazioni; g++) {
 
 				if (g > 0) cout << "\r";
@@ -72,6 +71,7 @@ template <class T> class ADE {
 
 					//Crossover
 					crossover(popolazione[i], popolazioneAlternativa[i], seed);
+					ricercaLocale(popolazioneAlternativa);
 
 					//Valutazione nuovi individui
 					if (popolazioneAlternativa[i]->score == 0)

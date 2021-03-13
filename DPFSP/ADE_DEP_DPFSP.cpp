@@ -145,6 +145,128 @@ void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazion
 	delete[] indiceTagli;
 }
 
+void ADE_DEP_DPFSP::ricercaLocale(Permutazione** popolazione) {
+
+	//Scegli criterio per effettuare ricerca locale
+	//Chiama VND sugli elementi selezionati
+
+}
+
+bool ADE_DEP_DPFSP::VND(Permutazione* p) {
+
+	bool miglioramento = true;
+	bool* ricercaNecessaria = new bool[istanza.fabbriche];
+	unsigned short* indiciFabbriche = new unsigned short[istanza.fabbriche * 2];
+
+	for (unsigned short f = 0; f < istanza.fabbriche; f++) {
+		ricercaNecessaria[f] = true;
+	}
+
+	indiciFabbriche[0] = 0;
+
+	unsigned short incremento = 0;
+
+	for (unsigned short i = 0; i < p->dimensione; i++) {
+		if (p->individuo[i] >= istanza.lavori) {
+			indiciFabbriche[++incremento] = i - 1;
+			indiciFabbriche[++incremento] = i + 1;
+		}
+	}
+
+	while (miglioramento) {
+		for (unsigned short f = 0; f < istanza.fabbriche; f++) {
+			if (ricercaNecessaria[f]) {
+
+				unsigned short inizioFabbrica = indiciFabbriche[2 * f];
+				unsigned short fineFabbrica = indiciFabbriche[2 * f + 1];
+
+				if (inizioFabbrica < fineFabbrica)
+					// Effettua ricerca L1 su fabbrica Ff
+					LS1(p, inizioFabbrica, fineFabbrica);
+				ricercaNecessaria[f] = false;
+			}
+		}
+
+		//Trova fabbrica Fy con Cmax peggiore
+		//Effettua L2 su Fy
+		//Se cambiamento (Fx, Fy cambiati) effettua L1 su Fx, Fy
+		//else miglioramento = false
+		miglioramento = false;
+	}
+
+	delete[] indiciFabbriche;
+	delete[] ricercaNecessaria;
+}
+
+bool ADE_DEP_DPFSP::LS1(Permutazione* p, unsigned short inizioFabbrica, unsigned short fineFabbrica) {
+	bool miglioramento;
+	
+	unsigned short nLavoriFabbrica = fineFabbrica - inizioFabbrica + 1;
+
+	unsigned short* lavoriFabbrica = new unsigned short[nLavoriFabbrica - 1];
+
+	do {
+		miglioramento = false;
+
+		for (unsigned short k = 1; k < nLavoriFabbrica; k++) {
+			lavoriFabbrica[k - 1] = p->individuo[inizioFabbrica + k];
+		}
+
+		for (unsigned short i = 0; i < nLavoriFabbrica - 1; i++) {
+			if (i != 0) {
+				lavoriFabbrica[i] = p->individuo[inizioFabbrica + i];
+			}
+			
+			unsigned short migliorePosizione = miglioreInserzione(lavoriFabbrica, nLavoriFabbrica-1, 
+				p->individuo[inizioFabbrica + i]);
+
+			if (migliorePosizione != i) {
+
+				//aggiorna permutazione spostando solo gli elementi toccati
+				unsigned short posizionePrecedente = inizioFabbrica + i;
+				unsigned short nuovaPosizione = inizioFabbrica + migliorePosizione;
+				bool spostatoVersoDestra = false;
+
+				if (nuovaPosizione > posizionePrecedente)
+					spostatoVersoDestra = true;
+
+				unsigned short tmp = p->individuo[posizionePrecedente];
+
+				if (spostatoVersoDestra) {
+					for (unsigned short k = posizionePrecedente; k < nuovaPosizione; k++) {
+						p->individuo[k] = p->individuo[k + 1];
+					}
+				}
+				else {
+					for (unsigned short k = nuovaPosizione; k > posizionePrecedente; k--) {
+						p->individuo[k] = p->individuo[k - 1];
+					}
+				}
+
+				p->individuo[nuovaPosizione] = tmp;
+
+				miglioramento = true;
+				break;
+			}				
+		}
+
+	} while (miglioramento);
+
+	delete[] lavoriFabbrica;
+}
+
+bool ADE_DEP_DPFSP::LS2(Permutazione* p, unsigned short iPrimoElemento, unsigned short iUltimoElemento) {
+	return false;
+}
+
+unsigned short ADE_DEP_DPFSP::miglioreInserzione(unsigned short* vettoreFabbrica, unsigned short dimensioneVettoreFabbrica,
+	unsigned short lavoroDaInserire) {
+
+
+
+	return 0;
+}
+
 Permutazione ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta, 
 	double Fmin, double Fmax, unsigned long long seed) {
 	return ADE::esegui(nIndividui, nGenerazioni, theta, Fmin, Fmax, seed);
