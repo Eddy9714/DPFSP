@@ -156,6 +156,8 @@ bool ADE_DEP_DPFSP::VND(Permutazione* p) {
 
 	bool miglioramento = true;
 	bool* ricercaNecessaria = new bool[istanza.fabbriche];
+	unsigned int* cFabbriche = new unsigned int[istanza.fabbriche];
+
 	unsigned short* indiciFabbriche = new unsigned short[istanza.fabbriche * 2];
 
 	for (unsigned short f = 0; f < istanza.fabbriche; f++) {
@@ -181,21 +183,48 @@ bool ADE_DEP_DPFSP::VND(Permutazione* p) {
 				unsigned short fineFabbrica = indiciFabbriche[2 * f + 1];
 
 				if (inizioFabbrica < fineFabbrica)
-					// Effettua ricerca L1 su fabbrica Ff
+					// Effettua ricerca LS1 su fabbrica Ff
 					LS1(p, inizioFabbrica, fineFabbrica);
 				ricercaNecessaria[f] = false;
 			}
 		}
 
 		//Trova fabbrica Fy con Cmax peggiore
+		unsigned int cPeggiore = 0;
+		unsigned int kPeggiore = 0;
+
+		for (unsigned int k = 0; k < istanza.fabbriche * 2; k+=2) {
+
+			if (indiciFabbriche[k] < indiciFabbriche[k + 1]) {
+				cFabbriche[k] = valutaIndividuoParziale(&(p->individuo[indiciFabbriche[k]]), 
+					indiciFabbriche[k + 1] - indiciFabbriche[k] + 1);
+				if (cFabbriche[k] > cPeggiore) {
+					cPeggiore = cFabbriche[k];
+					kPeggiore = k;
+				}
+			}
+			else cFabbriche[k] = 0;
+		}
+
 		//Effettua L2 su Fy
-		//Se cambiamento (Fx, Fy cambiati) effettua L1 su Fx, Fy
-		//else miglioramento = false
-		miglioramento = false;
+		int indiceInizioFCambiata = -1;
+
+		if ((indiceInizioFCambiata = LS2(p, kPeggiore, indiciFabbriche, cFabbriche)) != -1) {
+			//Se cambiamento (Fx, Fy cambiati) effettua L1 su Fx, Fy
+
+			if(indiciFabbriche[kPeggiore] < indiciFabbriche[kPeggiore + 1])
+				LS1(p, indiciFabbriche[kPeggiore], indiciFabbriche[kPeggiore+1]);
+
+			if(indiciFabbriche[indiceInizioFCambiata] < indiciFabbriche[indiceInizioFCambiata + 1])
+				LS1(p, indiciFabbriche[indiceInizioFCambiata], indiciFabbriche[indiceInizioFCambiata + 1]);
+		}
+		else miglioramento = false;
+
 	}
 
 	delete[] indiciFabbriche;
 	delete[] ricercaNecessaria;
+	delete[] cFabbriche;
 }
 
 bool ADE_DEP_DPFSP::LS1(Permutazione* p, unsigned short inizioFabbrica, unsigned short fineFabbrica) {
@@ -208,23 +237,21 @@ bool ADE_DEP_DPFSP::LS1(Permutazione* p, unsigned short inizioFabbrica, unsigned
 	do {
 		miglioramento = false;
 
-		for (unsigned short k = 1; k < nLavoriFabbrica; k++) {
-			lavoriFabbrica[k - 1] = p->individuo[inizioFabbrica + k];
-		}
+		memcpy(lavoriFabbrica, &(p->individuo[inizioFabbrica + 1]), (nLavoriFabbrica - 1) * sizeof(unsigned short));
 
-		for (unsigned short i = 0; i < nLavoriFabbrica - 1; i++) {
-			if (i != 0) {
+		for (unsigned short i = 0; i < nLavoriFabbrica; i++) {
+			if (i != 0 && i != nLavoriFabbrica - 1) {
 				lavoriFabbrica[i] = p->individuo[inizioFabbrica + i];
 			}
 			
-			unsigned short migliorePosizione = miglioreInserzione(lavoriFabbrica, nLavoriFabbrica-1, 
+			InfoInserzione risultato = miglioreInserzione(lavoriFabbrica, nLavoriFabbrica-1, 
 				p->individuo[inizioFabbrica + i]);
 
-			if (migliorePosizione != i) {
+			if (risultato.posizione != i) {
 
 				//aggiorna permutazione spostando solo gli elementi toccati
 				unsigned short posizionePrecedente = inizioFabbrica + i;
-				unsigned short nuovaPosizione = inizioFabbrica + migliorePosizione;
+				unsigned short nuovaPosizione = inizioFabbrica + risultato.posizione;
 				bool spostatoVersoDestra = false;
 
 				if (nuovaPosizione > posizionePrecedente)
@@ -255,17 +282,177 @@ bool ADE_DEP_DPFSP::LS1(Permutazione* p, unsigned short inizioFabbrica, unsigned
 	delete[] lavoriFabbrica;
 }
 
-bool ADE_DEP_DPFSP::LS2(Permutazione* p, unsigned short iPrimoElemento, unsigned short iUltimoElemento) {
-	return false;
+int ADE_DEP_DPFSP::LS2(Permutazione* p, unsigned int indiceFabbrica, unsigned short* indiciFabbriche,
+	unsigned int* cFabbriche) {
+
+	unsigned short inizioFabbrica = indiciFabbriche[indiceFabbrica];
+	unsigned short fineFabbrica = indiciFabbriche[indiceFabbrica + 1];
+	unsigned short nLavoriFabbrica = fineFabbrica - inizioFabbrica + 1;
+
+	unsigned short* lavoriFabbrica = new unsigned short[nLavoriFabbrica - 1];
+
+	memcpy(lavoriFabbrica, &(p->individuo[inizioFabbrica + 1]), (nLavoriFabbrica - 1) * sizeof(unsigned short));
+	
+	unsigned int migliorGuadagno = -1;
+	unsigned int posizioneFabbricaCambiata = 0;
+	unsigned short posizioneLavoroRimosso = 0;
+	unsigned short posizioneLavoroInserito = 0;
+
+	//cambiare gli indici dove necessario
+	for (unsigned short i = 0; i < nLavoriFabbrica; i++) {
+
+		// rimuovi il lavoro k in posizione i
+		if (i != 0 && i != nLavoriFabbrica - 1) {
+			lavoriFabbrica[i] = p->individuo[inizioFabbrica + i];
+		}
+
+		//valuta nuovo individuo
+		unsigned int nuovoCY = valutaIndividuoParziale(lavoriFabbrica, nLavoriFabbrica - 1);
+
+		// prova k in ogni posizione possibile dalle altre fabbriche
+		for (unsigned int k = 0; k < istanza.fabbriche * 2; k+=2) {
+			if (indiciFabbriche[k] != indiceFabbrica) {
+				InfoInserzione risultato = miglioreInserzione(&(p->individuo[indiciFabbriche[k]]),
+					indiciFabbriche[k + 1] - indiciFabbriche[k] + 1, p->individuo[inizioFabbrica + i]);
+
+				int guadagno = cFabbriche[indiceFabbrica / 2] - nuovoCY + cFabbriche[k / 2] - risultato.makeSpan;
+
+				if (guadagno > 0 && guadagno > migliorGuadagno) {
+					migliorGuadagno = guadagno;
+					posizioneFabbricaCambiata = k;
+					posizioneLavoroRimosso = indiciFabbriche[k] + i;
+					posizioneLavoroInserito = indiciFabbriche[k] + risultato.posizione;
+				}
+			}
+		}
+		
+		//Se c'è stato un miglioramento, aggiorniamo la permutazione 
+		if (migliorGuadagno != -1) {
+
+		}
+
+	}
+
+	delete[] lavoriFabbrica;
+
+	return migliorGuadagno != -1 ? indiceFabbricaCambiata : -1;
 }
 
-unsigned short ADE_DEP_DPFSP::miglioreInserzione(unsigned short* vettoreFabbrica, unsigned short dimensioneVettoreFabbrica,
+ADE_DEP_DPFSP::InfoInserzione ADE_DEP_DPFSP::miglioreInserzione(unsigned short* vettoreFabbrica, 
+	unsigned short dimensioneVettoreFabbrica,
 	unsigned short lavoroDaInserire) {
 
+	if (dimensioneVettoreFabbrica == 0) {
+		unsigned short fabbrica[1] = { lavoroDaInserire };
+		return { valutaIndividuoParziale(fabbrica, 1) , 0};
+	}
+		
+	//Accelerazione di Taillard
+	unsigned int* e = new unsigned int[istanza.macchine];
+	unsigned int* f = new unsigned int[istanza.macchine];
+	unsigned int** q = new unsigned int* [istanza.lavori];
 
+	unsigned int miglioreMakespan = UINT32_MAX;
+	unsigned short migliorePosizione = 0;
 
-	return 0;
+	for (int i = dimensioneVettoreFabbrica - 1; i >= 0; i--) {
+		q[i] = new unsigned int[istanza.macchine];
+
+		for (int j = istanza.macchine - 1; j >= 0; j--) {
+
+			if (i != dimensioneVettoreFabbrica - 1 && j != istanza.macchine - 1) {
+				q[i][j] = max(q[i][j + 1], q[i + 1][j]) + istanza.p[vettoreFabbrica[i]][j];
+			}
+			else if (i == dimensioneVettoreFabbrica - 1 && j != istanza.macchine - 1) {
+				q[i][j] = q[i][j + 1] + istanza.p[vettoreFabbrica[i]][j];
+			}
+			else if (i != dimensioneVettoreFabbrica - 1 && j == istanza.macchine - 1) {
+				q[i][j] = q[i + 1][j] + istanza.p[vettoreFabbrica[i]][j];
+			}
+			else {
+				q[i][j] = istanza.p[vettoreFabbrica[i]][j];
+			}
+		}
+	}
+
+	for (unsigned short i = 0; i <= dimensioneVettoreFabbrica; i++) {
+
+		for (unsigned short j = 0; j < istanza.macchine; j++) {
+
+			if (i == 0 && j == 0) {
+				f[0] = istanza.p[lavoroDaInserire][0];
+				e[0] = istanza.p[vettoreFabbrica[0]][0];
+			}
+			else if (i != 0 && j == 0) {
+				f[0] = e[0] + istanza.p[lavoroDaInserire][0];
+
+				if (i != dimensioneVettoreFabbrica)
+					e[0] = e[0] + istanza.p[vettoreFabbrica[i]][0];
+			}
+			else if (i == 0 && j != 0) {
+				f[j] = f[j - 1] + istanza.p[lavoroDaInserire][j];
+				e[j] = e[j - 1] + istanza.p[vettoreFabbrica[0]][j];
+			}
+			else {
+				f[j] = max(f[j - 1], e[j]) + istanza.p[lavoroDaInserire][j];
+				if (i != dimensioneVettoreFabbrica)
+					e[j] = max(e[j - 1], e[j]) + istanza.p[vettoreFabbrica[i]][j];
+			}
+		}
+
+		unsigned int makeSpanParziale = 0;
+
+		for (unsigned short j = 0; j < istanza.macchine; j++) {
+			makeSpanParziale = max(makeSpanParziale, f[j] + q[i][j]);
+		}
+
+		if (makeSpanParziale < miglioreMakespan) {
+			miglioreMakespan = makeSpanParziale;
+			migliorePosizione = i;
+		}
+	}
+
+	delete[] e;
+	delete[] f;
+
+	for (unsigned short i = 0; i < dimensioneVettoreFabbrica; i++) {
+		delete[] q[i];
+	}
+
+	delete[] q;
+
+	return { miglioreMakespan, migliorePosizione };
 }
+
+unsigned int ADE_DEP_DPFSP::valutaIndividuoParziale(unsigned short* fabbrica, unsigned short lunghezza) {
+
+	unsigned int* c = new unsigned int[istanza.macchine];
+
+	for (unsigned short i = 0; i < lunghezza ; i++) {
+
+		for (unsigned short j = 0; j < istanza.macchine; j++) {
+
+			if (i == 0 && j == 0) {
+				c[j] = istanza.p[fabbrica[i]][0];
+			}
+			else if (i != 0 && j != 0) {
+				c[j] = istanza.p[fabbrica[i]][j] + max(c[j - 1], c[j]);
+			}
+			else if (i == 0 && j != 0) {
+				c[j] = istanza.p[fabbrica[i]][j] + c[j - 1];
+			}
+			else {
+				c[0] = istanza.p[fabbrica[i]][0] + c[0];
+			}
+		}
+	}
+
+	unsigned int makeSpan = c[istanza.macchine - 1];
+
+	delete[] c;
+
+	return makeSpan;
+;}
 
 Permutazione ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short nGenerazioni, double theta, 
 	double Fmin, double Fmax, unsigned long long seed) {
