@@ -14,7 +14,7 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 		Permutazione esegui(unsigned short, unsigned short, double, double, double, unsigned long long);
 		const Istanza istanza;
 
-	private:
+	public:
 		struct InfoInserzione {
 			unsigned int makeSpan;
 			unsigned short posizione;
@@ -24,10 +24,10 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 		void inizializzaPopolazione(Permutazione**, unsigned short, unsigned long long);
 		void crossover(Permutazione*, Permutazione*, unsigned long long);
 		void subCrossover(Permutazione*, Permutazione*, Permutazione*);
-		void ricercaLocale(Permutazione**);
-		bool VND(Permutazione*);
-		bool LS1(Permutazione*, unsigned short, unsigned short);
-		int LS2(Permutazione*, unsigned int, unsigned short*, unsigned int*);
+		void ricercaLocale(Permutazione**, unsigned short);
+		void VND(Permutazione*);
+		void LS1(Permutazione*, unsigned short, unsigned short);
+		int LS2(Permutazione*, unsigned int, int*, unsigned int*);
 		InfoInserzione miglioreInserzione(unsigned short*, unsigned short, unsigned short);
 		unsigned int valutaIndividuoParziale(unsigned short*, unsigned short);
 		unsigned int valutaIndividuo(Permutazione*);

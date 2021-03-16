@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	unsigned short nGenerazioni = 100;
 	unsigned int nIndividui = 100;
 	double theta = 0.01;
-	double Fmax = 2;
+	double Fmax = 1.5;
 	string percorsoFile;
 
 	size_t pos;
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 			break;
 		case 1:
 			cerr << "Devi inserire il percorso del file!" << endl << endl;
-			exit(-1);
+			//exit(-1);
 	}
 
 	cout << endl << endl;
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
 	const auto tempoIniziale = orologio::now();
 
-	//percorsoFile = "C:/Users/edu4r/Desktop/DPFSP/DPFSP_Small/2/I_2_4_3_4.txt";
+	percorsoFile = "C:/Users/edu4r/Desktop/DPFSP/DPFSP_Large/2/Ta021_2.txt";
 
 	ADE_DEP_DPFSP adeDep(percorsoFile);
 	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, nGenerazioni, theta, 0.1, Fmax, seed);
