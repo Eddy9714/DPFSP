@@ -11,31 +11,31 @@
 			"cmake" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
 			"cpack" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cpack.exe",
 			"ctest" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/ctest.exe",
-			"root" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.18"
+			"root" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.19"
 		},
 		"version" : 
 		{
 			"isDirty" : false,
 			"major" : 3,
-			"minor" : 18,
-			"patch" : 20081302,
-			"string" : "3.18.20081302-MSVC_2",
+			"minor" : 19,
+			"patch" : 20122902,
+			"string" : "3.19.20122902-MSVC_2",
 			"suffix" : ""
 		}
 	},
 	"objects" : 
 	[
 		{
-			"jsonFile" : "codemodel-v2-d5bc072793bf75bbffe0.json",
+			"jsonFile" : "codemodel-v2-35224eda99ebf6bb1c72.json",
 			"kind" : "codemodel",
 			"version" : 
 			{
 				"major" : 2,
-				"minor" : 1
+				"minor" : 2
 			}
 		},
 		{
-			"jsonFile" : "cache-v2-f7f0a204c21d4b87867b.json",
+			"jsonFile" : "cache-v2-0ec7d4d5930179bbc344.json",
 			"kind" : "cache",
 			"version" : 
 			{
@@ -44,7 +44,7 @@
 			}
 		},
 		{
-			"jsonFile" : "cmakeFiles-v1-44c8ef794faa31604a61.json",
+			"jsonFile" : "cmakeFiles-v1-8a04c5c1fcb405e3e180.json",
 			"kind" : "cmakeFiles",
 			"version" : 
 			{
@@ -77,7 +77,7 @@
 				"responses" : 
 				[
 					{
-						"jsonFile" : "cache-v2-f7f0a204c21d4b87867b.json",
+						"jsonFile" : "cache-v2-0ec7d4d5930179bbc344.json",
 						"kind" : "cache",
 						"version" : 
 						{
@@ -86,7 +86,7 @@
 						}
 					},
 					{
-						"jsonFile" : "cmakeFiles-v1-44c8ef794faa31604a61.json",
+						"jsonFile" : "cmakeFiles-v1-8a04c5c1fcb405e3e180.json",
 						"kind" : "cmakeFiles",
 						"version" : 
 						{
@@ -95,12 +95,12 @@
 						}
 					},
 					{
-						"jsonFile" : "codemodel-v2-d5bc072793bf75bbffe0.json",
+						"jsonFile" : "codemodel-v2-35224eda99ebf6bb1c72.json",
 						"kind" : "codemodel",
 						"version" : 
 						{
 							"major" : 2,
-							"minor" : 1
+							"minor" : 2
 						}
 					}
 				]

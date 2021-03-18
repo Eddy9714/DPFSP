@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/edu4r/source/repos/DPFSP
+# Install script for directory: C:/Users/edu4r/source/repos/Eddy9714/DPFSP
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/edu4r/source/repos/DPFSP/out/install/x64-Debug (impostazione predefinita)")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/edu4r/Source/Repos/Eddy9714/DPFSP/out/install/x64-Debug (impostazione predefinita)")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/edu4r/source/repos/DPFSP/out/build/x64-Debug (impostazione predefinita)/DPFSP/cmake_install.cmake")
+  include("C:/Users/edu4r/source/repos/Eddy9714/DPFSP/out/build/x64-Debug (impostazione predefinita)/DPFSP/cmake_install.cmake")
 
 endif()
 
@@ -46,5 +46,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/edu4r/source/repos/DPFSP/out/build/x64-Debug (impostazione predefinita)/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/edu4r/source/repos/Eddy9714/DPFSP/out/build/x64-Debug (impostazione predefinita)/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

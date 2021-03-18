@@ -22,9 +22,10 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 
 		void creaPopolazione(Permutazione**, unsigned short, unsigned long long);
 		void inizializzaPopolazione(Permutazione**, unsigned short, unsigned long long);
+		void NEH2(Permutazione*);
 		void crossover(Permutazione*, Permutazione*, unsigned long long);
 		void subCrossover(Permutazione*, Permutazione*, Permutazione*);
-		void ricercaLocale(Permutazione**, unsigned short);
+		void ricercaLocale(Permutazione**, unsigned short, IndiciRandom*, unsigned long long);
 		void VND(Permutazione*);
 		void LS1(Permutazione*, unsigned short, unsigned short);
 		int LS2(Permutazione*, unsigned int, int*, unsigned int*);

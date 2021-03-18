@@ -63,12 +63,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/edu4r/source/repos/DPFSP/out/build/x64-Debug (impostazione predefinita)",
-		"source" : "C:/Users/edu4r/source/repos/DPFSP"
+		"build" : "C:/Users/edu4r/source/repos/Eddy9714/DPFSP/out/build/x64-Debug (impostazione predefinita)",
+		"source" : "C:/Users/edu4r/source/repos/Eddy9714/DPFSP"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 1
+		"minor" : 2
 	}
 }
