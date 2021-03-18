@@ -13,7 +13,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	unsigned long long seed = 0;
-	unsigned short nGenerazioni = 100;
+	unsigned short nGenerazioni = 200;
 	unsigned int nIndividui = 50;
 	double theta = 0.01;
 	double Fmax = 1.5;
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 			break;
 		case 1:
 			cerr << "Devi inserire il percorso del file!" << endl << endl;
-			//exit(-1);
+			exit(-1);
 	}
 
 	cout << endl << endl;
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
 	const auto tempoIniziale = orologio::now();
 
-	percorsoFile = "C:/Users/edu4r/Desktop/DPFSP/DPFSP_Large/2/Ta001_2.txt";
+	//percorsoFile = "C:/Users/edu4r/Desktop/DPFSP/DPFSP_Large/2/Ta060_2.txt";
 
 	ADE_DEP_DPFSP adeDep(percorsoFile);
 	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, nGenerazioni, theta, 0.1, Fmax, seed);
@@ -73,7 +73,6 @@ int main(int argc, char* argv[])
 	migliorIndividuo.stampa();
 	cout << "Punteggio: " << migliorIndividuo.score << endl << endl;
 
-	return(-123456);
 	//Salvo le informazioni su un CSV
 
 	int posizione = percorsoFile.find_last_of(".");

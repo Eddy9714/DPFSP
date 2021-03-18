@@ -9,7 +9,7 @@ template <class T> class ADE {
 		virtual void creaPopolazione(T**, unsigned short, unsigned long long) = 0;
 		virtual void inizializzaPopolazione(T**, unsigned short, unsigned long long) = 0;
 		virtual void crossover(T*, T*, unsigned long long) = 0;
-		virtual void ricercaLocale(T**, unsigned short, IndiciRandom*, unsigned long long) = 0;
+		virtual void ricercaLocaleRandomizzata(T**, unsigned short, IndiciRandom*, unsigned long long) = 0;
 		virtual unsigned int valutaIndividuo(T*) = 0;
 		virtual void stampa(T**, unsigned short) = 0;
 
@@ -73,7 +73,7 @@ template <class T> class ADE {
 					crossover(popolazione[i], popolazioneAlternativa[i], seed);
 				}
 
-				ricercaLocale(popolazioneAlternativa, nIndividui, &r, seed);
+				ricercaLocaleRandomizzata(popolazioneAlternativa, nIndividui, &r, seed);
 
 				for (unsigned short i = 0; i < nIndividui; i++) {
 					//Valutazione nuovi individui

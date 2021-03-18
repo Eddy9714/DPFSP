@@ -39,6 +39,8 @@ Permutazione::~Permutazione() {
 }
 
 void Permutazione::somma(Permutazione* p) {
+	seed = max(1ULL, seed + p->seed);
+
 	unsigned short* individuo = new unsigned short[dimensione];
 
 	for (int k = 0; k < dimensione; k++) {
@@ -50,6 +52,9 @@ void Permutazione::somma(Permutazione* p) {
 }
 
 void Permutazione::inversa(){
+
+	seed = max(1ULL, -seed);
+
 	unsigned short* individuo = new unsigned short[dimensione];
 
 	for (int k = 0; k < dimensione; k++) {
@@ -67,6 +72,7 @@ void Permutazione::differenza(Permutazione* p) {
 }
 
 void Permutazione::prodotto(double F) {
+	seed = max(1ULL, (unsigned long long)((1 + F) * seed));
 
 	if (F > 0) {
 		unsigned int numeroInversioniMassime = dimensione * (dimensione - 1) / 2;

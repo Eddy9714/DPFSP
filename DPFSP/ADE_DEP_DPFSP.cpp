@@ -215,7 +215,7 @@ void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazion
 	delete[] indiceTagli;
 }
 
-void ADE_DEP_DPFSP::ricercaLocale(Permutazione** popolazione, unsigned short nIndividui, IndiciRandom* r, unsigned long long seed) {
+void ADE_DEP_DPFSP::ricercaLocaleRandomizzata(Permutazione** popolazione, unsigned short nIndividui, IndiciRandom* r, unsigned long long seed) {
 	
 	//Scegli criterio per effettuare ricerca locale
 	//Chiama VND sugli elementi selezionati
