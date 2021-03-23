@@ -10,6 +10,7 @@ class Istanza {
 		unsigned short lavori;
 
 		unsigned int** p;
+		unsigned int* minp;
 
 		Istanza(string path);
 		~Istanza();

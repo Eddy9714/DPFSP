@@ -17,6 +17,7 @@ class Permutazione {
 		void somma(Permutazione*);
 		void differenza(Permutazione*);
 		void prodotto(double);
+		void random();
 		void inversa();
 		void identita();
 		void stampa();

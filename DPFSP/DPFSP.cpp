@@ -13,25 +13,27 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	unsigned long long seed = 0;
-	unsigned short nGenerazioni = 200;
+	unsigned short scalaElaborazione = 100;
 	unsigned int nIndividui = 50;
-	double theta = 0.01;
-	double Fmax = 1.5;
+	double theta = 0.05;
+	double Fmax = 1;
+	bool normalizzazione = false;
 	string percorsoFile;
 
 	size_t pos;
 
 	switch (argc) {
 		default:
-
+		case 8:
+			seed = strtoull(argv[7], NULL, 10);
 		case 7:
-			seed = strtoull(argv[6], NULL, 10);
+			normalizzazione = stoi(argv[6], &pos);
 		case 6:
 			Fmax = strtod(argv[5], NULL);
 		case 5:
 			theta = strtod(argv[4], NULL);
 		case 4:
-			nGenerazioni = stoi(argv[3], &pos);
+			scalaElaborazione = stoi(argv[3], &pos);
 		case 3:
 			nIndividui = stoi(argv[2], &pos);
 		case 2:
@@ -39,16 +41,17 @@ int main(int argc, char* argv[])
 			break;
 		case 1:
 			cerr << "Devi inserire il percorso del file!" << endl << endl;
-			exit(-1);
+			//exit(-1);
 	}
 
 	cout << endl << endl;
 	cout << "Il programma sara' eseguito con queste impostazioni:" << endl << endl;
 	cout << "Percorso file: " << percorsoFile << endl;
 	cout << "Numero individui: " << nIndividui << endl;
-	cout << "Numero generazioni: " << nGenerazioni << endl;
+	cout << "Scala elaborazione: " << scalaElaborazione << endl;
 	cout << "Theta: " << theta << endl;
 	cout << "F massimo: " << Fmax << endl;
+	cout << "Normalizzazione attiva: " << (normalizzazione ? "Si" : "No") << endl;
 
 	if(seed > 0) cout << "Seed: " << seed << endl;
 	else cout << "Seed: " << "Random" << endl << endl;
@@ -58,10 +61,11 @@ int main(int argc, char* argv[])
 
 	const auto tempoIniziale = orologio::now();
 
-	//percorsoFile = "C:/Users/edu4r/Desktop/DPFSP/DPFSP_Large/2/Ta060_2.txt";
+	percorsoFile = "C:/Users/edu4r/Desktop/DPFSP/DPFSP_Large/7/Ta060_7.txt";
 
 	ADE_DEP_DPFSP adeDep(percorsoFile);
-	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, nGenerazioni, theta, 0.1, Fmax, seed);
+	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, scalaElaborazione, theta, 0.1, Fmax, 
+		normalizzazione, seed);
 
 	const sec durata = orologio::now() - tempoIniziale;
 
@@ -83,15 +87,16 @@ int main(int argc, char* argv[])
 	ofstream file(nomeReport);
 	
 	if (file.is_open()) {
-		file << "Fabbriche; Lavori; Macchine; Numero individui; Numero generazioni; Theta; Fmax; Seed (0 se random); Durata (secondi); Miglior punteggio; Individuo;" << endl;
+		file << "Fabbriche; Lavori; Macchine; Numero individui; Scala elaborazione; Theta; Fmax; Normalizzazione; Seed (0 se random); Durata (secondi); Miglior punteggio; Individuo;" << endl;
 
 		file << adeDep.istanza.fabbriche << ";";
 		file << adeDep.istanza.lavori << ";";
 		file << adeDep.istanza.macchine << ";";
 		file << nIndividui << ";";
-		file << nGenerazioni << ";";
+		file << scalaElaborazione << ";";
 		file << theta << ";";
 		file << Fmax << ";";
+		file << (normalizzazione ? "Si" : "No") << ";";
 		file << seed << ";";
 		file << durata.count() << ";";
 		file << migliorIndividuo.score << ";";

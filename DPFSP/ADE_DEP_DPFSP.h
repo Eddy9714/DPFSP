@@ -11,24 +11,29 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 
 	public:
 		ADE_DEP_DPFSP(string);
-		Permutazione esegui(unsigned short, unsigned short, double, double, double, unsigned long long);
+		Permutazione esegui(unsigned short, unsigned short, double, double, double, bool, unsigned long long);
 		const Istanza istanza;
 
-	private:
+	public:
 		struct InfoInserzione {
 			unsigned int makeSpan;
 			unsigned short posizione;
 		};
 
-		void creaPopolazione(Permutazione**, unsigned short, unsigned long long);
-		void inizializzaPopolazione(Permutazione**, unsigned short, unsigned long long);
+		void creaPopolazione(Permutazione**, unsigned short);
+		void inizializzaPopolazione(Permutazione**, unsigned short, bool);
+		void selezionaPopolazione(Permutazione**, Permutazione**, unsigned short, double, unsigned short&, bool);
+		void ordinaFabbriche(Permutazione*);
+		void normalizza(Permutazione*);
 		void NEH2(Permutazione*);
-		void crossover(Permutazione*, Permutazione*, unsigned long long);
+		void crossover(Permutazione*, Permutazione*);
 		void subCrossover(Permutazione*, Permutazione*, Permutazione*);
-		void ricercaLocaleRandomizzata(Permutazione**, unsigned short, IndiciRandom*, unsigned long long);
-		void VND(Permutazione*);
+		void ricercaLocale(Permutazione*);
+		void ricercaLocaleRandomizzata(Permutazione**, unsigned short);
+		void VND(Permutazione*, bool);
 		void LS1(Permutazione*, unsigned short, unsigned short);
-		int LS2(Permutazione*, unsigned int, int*, unsigned int*);
+		int LS2(Permutazione*, unsigned int, int*, unsigned int*, bool);
+		void LS3(Permutazione*);
 		InfoInserzione miglioreInserzione(unsigned short*, unsigned short, unsigned short);
 		unsigned int valutaIndividuoParziale(unsigned short*, unsigned short);
 		unsigned int valutaIndividuo(Permutazione*);

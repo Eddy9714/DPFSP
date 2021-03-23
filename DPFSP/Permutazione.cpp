@@ -68,7 +68,8 @@ void Permutazione::inversa(){
 void Permutazione::differenza(Permutazione* p) {
 	Permutazione copia(*p);
 	copia.inversa();
-	this->somma(&copia);
+	copia.somma(this);
+	scambia(&copia);
 }
 
 void Permutazione::prodotto(double F) {
@@ -85,12 +86,20 @@ void Permutazione::prodotto(double F) {
 
 		if (F < 1.) {
 			Permutazione copia(*this);
-			copia.inversa();
 
-			arrayInversioni = new unsigned short[nInvApplicabili];
+			if (F <= 0.5) {
+				copia.inversa();
 
-			randomBS(copia, nInvApplicabili, arrayInversioni);
-			this->identita();
+				arrayInversioni = new unsigned short[nInvApplicabili];
+
+				randomBS(copia, nInvApplicabili, arrayInversioni);
+				this->identita();
+			}
+			else {
+				nInvApplicabili = (unsigned int)ceil((1-F) * numeroInversioniP);
+				arrayInversioni = new unsigned short[nInvApplicabili];
+				randomBS(copia, nInvApplicabili, arrayInversioni);
+			}
 		}
 		else {
 			nInvApplicabili = min(numeroInversioniMassime, nInvApplicabili);
@@ -200,6 +209,24 @@ unsigned int Permutazione::numeroInversioni(Permutazione& p) {
 	}
 
 	return inv;
+}
+
+void Permutazione::random() {
+	Random r;
+	if (seed > 0)
+		r.impostaSeed(seed + 8419474292110ULL);
+
+	for (unsigned short j = 0; j < dimensione; j++) {
+		individuo[j] = j;
+	}
+
+	for (unsigned short k = dimensione - 1; k > 0; k--) {
+		int valoreRandom = r.randIntU(0, k);
+
+		unsigned short tmp = individuo[valoreRandom];
+		individuo[valoreRandom] = individuo[k];
+		individuo[k] = tmp;
+	}
 }
 
 void Permutazione::stampa() {
