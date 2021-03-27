@@ -6,7 +6,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
-#include <limits>
+#include <stdint.h>
 #include <cstring>
 
 using namespace std;
