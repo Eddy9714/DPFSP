@@ -1,6 +1,4 @@
-#include <cstring>
 #include "PermutazioneT.h"
-#include "Random.h"
 
 using namespace std;
 

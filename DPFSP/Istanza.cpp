@@ -1,9 +1,5 @@
-#include <string>
-#include <fstream>
-#include <iostream>
-
+#pragma once
 #include "Istanza.h"
-
 
 using namespace std;
 

@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
-using namespace std;
+#include <fstream>
+#include <iostream>
 
+using namespace std;
 
 class Istanza {
 	public:

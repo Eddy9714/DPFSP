@@ -1,5 +1,8 @@
 #pragma once
 #include "Permutazione.h"
+#include <cstring>
+#include "Random.h"
+
 
 class PermutazioneST : public Permutazione {
 

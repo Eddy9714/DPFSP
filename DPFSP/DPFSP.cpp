@@ -1,10 +1,5 @@
-﻿// DPFSP.cpp: definisce il punto di ingresso dell'applicazione.
-//
-
+﻿#pragma once
 #include "DPFSP.h"
-#include "ADE_DEP_DPFSP.h"
-#include <chrono>
-#include <fstream>
 
 using namespace std;
 

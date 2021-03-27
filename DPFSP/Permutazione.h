@@ -1,4 +1,6 @@
 #pragma once
+#include <cstring>
+#include "Random.h"
 #include <iostream>
 
 class Permutazione {

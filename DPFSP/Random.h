@@ -1,3 +1,4 @@
+#pragma once
 #include <random>
 
 using namespace std;
@@ -8,7 +9,7 @@ class Random {
 
 	public:
 		Random() {
-			std::random_device rd;
+			random_device rd;
 			gen.seed(rd());
 		}
 

@@ -1,9 +1,13 @@
 #pragma once
-
 #include "ADE.h"
 #include "Istanza.h"
 #include "Permutazione.h"
+#include "PermutazioneI.h"
 #include <string>
+#include <iostream>
+#include <algorithm>
+#include <limits>
+#include <cstring>
 
 using namespace std;
 

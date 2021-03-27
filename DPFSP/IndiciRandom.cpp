@@ -1,3 +1,4 @@
+#pragma once
 #include "IndiciRandom.h"
 
 IndiciRandom::IndiciRandom(unsigned short d) {
