@@ -8,7 +8,7 @@ template <class T> class ADE {
 
 	protected:
 		IndiciRandom* indiciRandom;
-		unsigned long long seed = 0;
+		unsigned int seed = 0;
 
 		virtual void creaPopolazione(T**, unsigned short) = 0;
 		virtual void inizializzaPopolazione(T**, unsigned short, bool) = 0;
@@ -21,7 +21,7 @@ template <class T> class ADE {
 		virtual void stampa(T**, unsigned short) = 0;
 
 		T esegui(unsigned short nIndividui, unsigned long long tempoDisponibileMs, double theta, double Fmin, 
-			double Fmax, bool normalizzazione, unsigned long long s) {
+			double Fmax, bool normalizzazione, unsigned int s) {
 
 			using orologio = std::chrono::system_clock;
 			auto tempoFinale = orologio::now() + chrono::milliseconds(tempoDisponibileMs);
@@ -43,11 +43,11 @@ template <class T> class ADE {
 
 			indiciRandom = new IndiciRandom(nIndividui);
 
-			if (seed > 0) indiciRandom->impostaSeed(seed + 19048475920238ULL);
+			if (seed > 0) indiciRandom->impostaSeed(seed + 1900238);
 
 			Random ran;
 
-			if (seed > 0) ran.impostaSeed(seed + 841094662892ULL);
+			if (seed > 0) ran.impostaSeed(seed + 541892);
 
 			for (unsigned short i = 0; i < nIndividui; i++) {
 				vettoreF[i] = ran.randDouble(Fmin, Fmax);
@@ -81,20 +81,19 @@ template <class T> class ADE {
 					indiciRandom->generaIndici(treIndici, 3);
 
 					if (seed > 0) {
-						popolazione[treIndici[0]]->seed = max(1ULL, popolazione[treIndici[0]]->seed + contatore);
-						popolazione[treIndici[1]]->seed = max(1ULL, popolazione[treIndici[1]]->seed + contatore);
-						popolazione[treIndici[2]]->seed = max(1ULL, popolazione[treIndici[1]]->seed + contatore);
+						popolazione[treIndici[0]]->seed = max(1U, popolazione[treIndici[0]]->seed + contatore);
+						popolazione[treIndici[1]]->seed = max(1U, popolazione[treIndici[1]]->seed + contatore);
+						popolazione[treIndici[2]]->seed = max(1U, popolazione[treIndici[1]]->seed + contatore);
 						++contatore;
 					}
 
-					T temp = *(popolazione[treIndici[1]]);
 
-					temp.differenza(popolazione[treIndici[2]]);
-					temp.prodotto(vettoreF[i]);
-					if(normalizzazione) normalizza(&temp);
-					temp.somma(popolazione[treIndici[0]]);
+					*popolazioneAlternativa[i] = *(popolazione[treIndici[1]]);
+					popolazioneAlternativa[i]->differenza(popolazione[treIndici[2]]);
+					popolazioneAlternativa[i]->prodotto(vettoreF[i]);
+					popolazioneAlternativa[i]->somma(popolazione[treIndici[0]]);
 
-					popolazioneAlternativa[i]->scambia(&temp);
+					if (normalizzazione) normalizza(popolazioneAlternativa[i]);
 				}
 
 				ricercaLocaleRandomizzata(popolazioneAlternativa, nIndividui);
@@ -104,8 +103,7 @@ template <class T> class ADE {
 				for (unsigned short i = 0; i < nIndividui; i++) {
 
 					if (ran.randDouble(0, 1) < 0.1) {
-						double pesoRandom = ran.randDouble(0, 1);
-						vettoreF[i] = Fmin + pesoRandom * Fmax;
+						vettoreF[i] = Fmin + ran.randDouble(0, 1) * (Fmax - Fmin);
 					}
 
 				}

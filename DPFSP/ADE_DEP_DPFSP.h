@@ -11,7 +11,7 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 
 	public:
 		ADE_DEP_DPFSP(string);
-		Permutazione esegui(unsigned short, unsigned short, double, double, double, bool, unsigned long long);
+		Permutazione esegui(unsigned short, unsigned short, double, double, double, bool, unsigned int);
 		const Istanza istanza;
 
 	public:

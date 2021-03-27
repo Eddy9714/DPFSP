@@ -13,9 +13,9 @@ class IndiciRandom {
 
 	public:
 		IndiciRandom(unsigned short);
-		IndiciRandom(unsigned short, unsigned long long);
+		IndiciRandom(unsigned short, unsigned int);
 		~IndiciRandom();
 		void generaIndici(unsigned short[], unsigned short);
-		void impostaSeed(unsigned long long);
+		void impostaSeed(unsigned int);
 };
 

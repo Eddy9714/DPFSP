@@ -1,5 +1,6 @@
 #include "ADE_DEP_DPFSP.h"
 #include <iostream>
+#include "PermutazioneI.h"
 
 using namespace std;
 
@@ -9,18 +10,22 @@ void ADE_DEP_DPFSP::creaPopolazione(Permutazione** popolazione, unsigned short n
 
 	for (unsigned int k = 0; k < nIndividui; k++) {
 		if(seed > 0)
-			popolazione[k] = new Permutazione(istanza.lavori + istanza.fabbriche - 1, max(seed + 2ULL*k + 1746184ULL, 1ULL));
+			popolazione[k] = new PermutazioneI(istanza.lavori + istanza.fabbriche - 1, max(seed + 2ULL*k + 1746184ULL, 1ULL));
 		else 
-			popolazione[k] = new Permutazione(istanza.lavori + istanza.fabbriche - 1);
+			popolazione[k] = new PermutazioneI(istanza.lavori + istanza.fabbriche - 1);
 	}
 }
 
 void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned short nIndividui, bool normalizzazione) {
 	Random r;
 
-	if (seed > 0) r.impostaSeed(seed + 7483984741ULL);
+	if (seed > 0) r.impostaSeed(seed + 483984741);
 
-	for (unsigned short i = 0; i < nIndividui; i++) {
+	NEH2(popolazione[0]);
+	popolazione[0]->score = valutaIndividuo(popolazione[0]);
+	if (normalizzazione) normalizza(popolazione[0]);
+
+	for (unsigned short i = 1; i < nIndividui; i++) {
 		popolazione[i]->random();
 		popolazione[i]->score = valutaIndividuo(popolazione[i]);
 		if(normalizzazione) normalizza(popolazione[i]);
@@ -33,7 +38,7 @@ void ADE_DEP_DPFSP::selezionaPopolazione(Permutazione** popolazione, Permutazion
 	Random r;
 
 	if (seed > 0)
-		r.impostaSeed(seed + 4958152750925591ULL);
+		r.impostaSeed(seed + 95815591);
 
 	double delta;
 
@@ -160,8 +165,8 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 
 void ADE_DEP_DPFSP::crossover(Permutazione* i1, Permutazione* i2) {
 
-	Permutazione p1(i1->dimensione, i1->seed);
-	Permutazione p2(i2->dimensione, i2->seed);
+	PermutazioneI p1(i1->dimensione, i1->seed);
+	PermutazioneI p2(i2->dimensione, i2->seed);
 
 	subCrossover(i1, i2, &p1);
 	subCrossover(i2, i1, &p2);
@@ -176,7 +181,7 @@ void ADE_DEP_DPFSP::crossover(Permutazione* i1, Permutazione* i2) {
 void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazione* ris) {
 
 	Random r;
-	if (ris->seed > 0) r.impostaSeed(ris->seed + 9471032902612ULL);
+	if (ris->seed > 0) r.impostaSeed(ris->seed + 947103);
 
 	bool* daEliminare = new bool[i1->dimensione];
 	unsigned short* indiceTagli = new unsigned short[istanza.fabbriche * 2];
@@ -602,7 +607,7 @@ void ADE_DEP_DPFSP::LS3(Permutazione* p) {
 			delete[] indiciCasuali;
 			indiciCasuali = new unsigned short[lavorifMax];
 			IndiciRandom r(lavorifMax);
-			if (seed > 0) r.impostaSeed(seed + 884092750301746ULL);
+			if (seed > 0) r.impostaSeed(seed + 884092);
 			r.generaIndici(indiciCasuali, lavorifMax);
 
 			info.makeSpan = UINT32_MAX;
@@ -831,7 +836,7 @@ void ADE_DEP_DPFSP::normalizza(Permutazione* p) {
 }
 
 Permutazione ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short scalaElaborazione, double theta,
-	double Fmin, double Fmax, bool normalizzazione, unsigned long long seed) {
+	double Fmin, double Fmax, bool normalizzazione, unsigned int seed) {
 
 	unsigned long long tempoDisponibileMs = scalaElaborazione * istanza.lavori * istanza.macchine;
 

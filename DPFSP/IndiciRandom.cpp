@@ -10,7 +10,7 @@ IndiciRandom::IndiciRandom(unsigned short d) {
 	}
 }
 
-IndiciRandom::IndiciRandom(unsigned short d, unsigned long long seed) {
+IndiciRandom::IndiciRandom(unsigned short d, unsigned int seed) {
 	dimensione = d;
 	vettoreIndici = new unsigned short[d];
 	random = new Random();
@@ -28,7 +28,7 @@ IndiciRandom::~IndiciRandom() {
 	delete random;
 }
 
-void IndiciRandom::impostaSeed(unsigned long long seed) {
+void IndiciRandom::impostaSeed(unsigned int seed) {
 	random->impostaSeed(seed);
 }
 

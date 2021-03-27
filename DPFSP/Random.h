@@ -12,7 +12,7 @@ class Random {
 			gen.seed(rd());
 		}
 
-		Random(unsigned long long seed) {
+		Random(unsigned int seed) {
 			gen.seed(seed);
 		}
 
@@ -21,12 +21,17 @@ class Random {
 			return distrib(gen);
 		}
 
+		void dueIndiciRandom(unsigned int dimensione, int& i1, int& i2) {
+			i1 = randIntU(0, dimensione - 1);
+			i2 = (i1 + 1 + randIntU(0, dimensione - 2)) % dimensione;
+		}
+
 		double randDouble(double a, double b) {
 			uniform_real_distribution<double> distrib(a, b);
 			return distrib(gen);
 		}
 
-		void impostaSeed(unsigned long seed) {
+		void impostaSeed(unsigned int seed) {
 			gen.seed(seed);
 		}
 };

@@ -1,32 +1,28 @@
 #pragma once
+#include <iostream>
 
 class Permutazione {
 
-	private:
-		void randomBS(Permutazione&, unsigned int, unsigned short*);
-		unsigned int numeroInversioni(Permutazione&);
-
 	public:
 		Permutazione(unsigned short);
-		Permutazione(unsigned short, unsigned long long);
-		Permutazione(unsigned short*, unsigned short, unsigned long long);
+		Permutazione(unsigned short, unsigned int);
+		Permutazione(unsigned short*, unsigned short, unsigned int);
 		Permutazione(unsigned short*, unsigned short);
 		Permutazione(const Permutazione& p);
-		~Permutazione();
+		virtual ~Permutazione();
+		virtual Permutazione& operator=(Permutazione&);
 
 		void somma(Permutazione*);
 		void differenza(Permutazione*);
-		void prodotto(double);
+		virtual void prodotto(double) {};
 		void random();
 		void inversa();
 		void identita();
 		void stampa();
 		void scambia(Permutazione*);
 
-		Permutazione& operator=(Permutazione&);
-
 		unsigned short* individuo;
 		const unsigned short dimensione;
 		unsigned int score = 0;
-		unsigned long long seed = 0;
+		unsigned int seed = 0;
 };

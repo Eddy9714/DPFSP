@@ -8,15 +8,16 @@
 #include <fstream>
 
 
+
 using namespace std;
 
 int main(int argc, char* argv[])
 {
-	unsigned long long seed = 0;
+	unsigned int seed = 0;
 	unsigned short scalaElaborazione = 100;
 	unsigned int nIndividui = 50;
 	double theta = 0.05;
-	double Fmax = 1;
+	double Fmax = 1.2;
 	bool normalizzazione = false;
 	string percorsoFile;
 
@@ -25,7 +26,7 @@ int main(int argc, char* argv[])
 	switch (argc) {
 		default:
 		case 8:
-			seed = strtoull(argv[7], NULL, 10);
+			seed = stoi(argv[7], &pos);
 		case 7:
 			normalizzazione = stoi(argv[6], &pos);
 		case 6:
@@ -41,7 +42,7 @@ int main(int argc, char* argv[])
 			break;
 		case 1:
 			cerr << "Devi inserire il percorso del file!" << endl << endl;
-			//exit(-1);
+			exit(-1);
 	}
 
 	cout << endl << endl;
@@ -60,8 +61,6 @@ int main(int argc, char* argv[])
 	using sec = std::chrono::duration<double>;
 
 	const auto tempoIniziale = orologio::now();
-
-	percorsoFile = "C:/Users/edu4r/Desktop/DPFSP/DPFSP_Large/7/Ta060_7.txt";
 
 	ADE_DEP_DPFSP adeDep(percorsoFile);
 	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, scalaElaborazione, theta, 0.1, Fmax, 
