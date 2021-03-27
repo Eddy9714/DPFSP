@@ -1,5 +1,8 @@
+#include <cstring>
 #include "PermutazioneI.h"
 #include "Random.h"
+
+using namespace std;
 
 PermutazioneI::PermutazioneI(const PermutazioneI& p) : Permutazione(p) {}
 
