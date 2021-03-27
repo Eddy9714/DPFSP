@@ -1,5 +1,9 @@
-#include "ADE_DEP_DPFSP.h"
 #include <iostream>
+#include <algorithm>
+#include <limits>
+#include <cstring>
+
+#include "ADE_DEP_DPFSP.h"
 #include "PermutazioneI.h"
 
 using namespace std;

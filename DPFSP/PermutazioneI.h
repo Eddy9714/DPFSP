@@ -19,11 +19,11 @@ class PermutazioneI : public Permutazione {
 			unsigned short y;
 		};
 
-		void PermutazioneI::inserisci(PermutazioneI*, Coppia&);
+		void inserisci(PermutazioneI*, Coppia&);
 		void randomIS(PermutazioneI*, unsigned short&, double, Coppia*, int);
 		void createLengthsArray(PermutazioneI*, unsigned short*, unsigned short*, unsigned short&, int&);
 		void insertionSortWithValues(unsigned short*, unsigned short, PermutazioneI*);
 		unsigned short lisLength(PermutazioneI*);
 		unsigned short insWeight(PermutazioneI*);
-		unsigned short PermutazioneI::ricercaBinaria(unsigned short*, unsigned short, unsigned short);
+		unsigned short ricercaBinaria(unsigned short*, unsigned short, unsigned short);
 };
