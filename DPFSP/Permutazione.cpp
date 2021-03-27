@@ -1,11 +1,13 @@
-#include "Permutazione.h";
-#include <memory>
+#include "Permutazione.h"
+#include <cstring>
 #include "Random.h"
 #include <iostream>
 
+using namespace std;
+
 Permutazione::Permutazione(const Permutazione& p) : dimensione(p.dimensione) {
 	individuo = new unsigned short[p.dimensione];
-	std::memcpy(individuo, p.individuo, dimensione * sizeof(unsigned short));
+	memcpy(individuo, p.individuo, dimensione * sizeof(unsigned short));
 	score = p.score;
 	seed = p.seed;
 }
@@ -26,12 +28,12 @@ void Permutazione::identita() {
 
 Permutazione::Permutazione(unsigned short* p, unsigned short d, unsigned int seed) : dimensione(d), seed(seed) {
 	individuo = new unsigned short[dimensione];
-	std::memcpy(individuo, p, dimensione * sizeof(unsigned short));
+	memcpy(individuo, p, dimensione * sizeof(unsigned short));
 }
 
 Permutazione::Permutazione(unsigned short* p, unsigned short d) : dimensione(d) {
 	individuo = new unsigned short[dimensione];
-	std::memcpy(individuo, p, dimensione * sizeof(unsigned short));
+	memcpy(individuo, p, dimensione * sizeof(unsigned short));
 }
 
 Permutazione& Permutazione::operator=(Permutazione& p) {
