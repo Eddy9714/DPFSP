@@ -95,7 +95,7 @@ void ADE_DEP_DPFSP::NEH2(Permutazione* individuo) {
 
 	for (unsigned short i = 0; i < istanza.lavori; i++) {
 		int fMigliore = -1;
-		InfoInserzione migliore = {UINT_MAX, 0};
+		InfoInserzione migliore = {UINT32_MAX, 0};
 
 		for (unsigned int f = 0; f < istanza.fabbriche * 2; f+=2) {
 			//inserisci ordinamento[i] in ogni posizione della fabbrica ff
