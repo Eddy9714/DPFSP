@@ -23,7 +23,7 @@ void PermutazioneI::prodotto(double F) {
 		Coppia* coppie;
 
 		if (F < 1) {
-			coppie = new Coppia[ceil(dimensione * F)];
+			coppie = new Coppia[(int)ceil(dimensione * F)];
 			PermutazioneI copia(*this);
 			copia.inversa();
 
