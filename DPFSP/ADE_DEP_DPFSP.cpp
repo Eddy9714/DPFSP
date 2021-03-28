@@ -9,9 +9,9 @@ void ADE_DEP_DPFSP::creaPopolazione(Permutazione** popolazione, unsigned short n
 
 	for (unsigned int k = 0; k < nIndividui; k++) {
 		if(seed > 0)
-			popolazione[k] = new PermutazioneST(istanza.lavori + istanza.fabbriche - 1, max(seed + 2ULL*k + 1746184ULL, 1ULL));
+			popolazione[k] = new PermutazioneT(istanza.lavori + istanza.fabbriche - 1, max(seed + 2ULL*k + 1746184ULL, 1ULL));
 		else 
-			popolazione[k] = new PermutazioneST(istanza.lavori + istanza.fabbriche - 1);
+			popolazione[k] = new PermutazioneT(istanza.lavori + istanza.fabbriche - 1);
 	}
 }
 
@@ -164,8 +164,8 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 
 void ADE_DEP_DPFSP::crossover(Permutazione* i1, Permutazione* i2) {
 
-	PermutazioneST p1(i1->dimensione, i1->seed);
-	PermutazioneST p2(i2->dimensione, i2->seed);
+	PermutazioneT p1(i1->dimensione, i1->seed);
+	PermutazioneT p2(i2->dimensione, i2->seed);
 
 	subCrossover(i1, i2, &p1);
 	subCrossover(i2, i1, &p2);

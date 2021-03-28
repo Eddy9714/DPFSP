@@ -2,7 +2,7 @@
 #include "ADE.h"
 #include "Istanza.h"
 #include "Permutazione.h"
-#include "PermutazioneST.h"
+#include "PermutazioneT.h"
 #include <string>
 #include <iostream>
 #include <algorithm>
