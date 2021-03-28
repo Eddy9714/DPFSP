@@ -37,6 +37,8 @@ int main(int argc, char* argv[])
 			exit(-1);
 	}
 
+	/*
+
 	cout << endl << endl;
 	cout << "Il programma sara' eseguito con queste impostazioni:" << endl << endl;
 	cout << "Percorso file: " << percorsoFile << endl;
@@ -45,6 +47,8 @@ int main(int argc, char* argv[])
 	cout << "Theta: " << theta << endl;
 	cout << "F massimo: " << Fmax << endl;
 	cout << "Normalizzazione attiva: " << (normalizzazione ? "Si" : "No") << endl;
+
+	*/
 
 	if(seed > 0) cout << "Seed: " << seed << endl;
 	else cout << "Seed: " << "Random" << endl << endl;
@@ -62,11 +66,15 @@ int main(int argc, char* argv[])
 
 	//Stampo a video le informazioni
 
+	/*
+
 	cout << "Risultati: " << endl << endl;
 	cout << "Tempo speso: " << durata.count() << " secondi" << endl;
 	cout << "Individuo: ";
 	migliorIndividuo.stampa();
 	cout << "Punteggio: " << migliorIndividuo.score << endl << endl;
+
+	*/
 
 	//Salvo le informazioni su un CSV
 

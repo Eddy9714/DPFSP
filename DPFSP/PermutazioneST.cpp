@@ -47,6 +47,7 @@ void PermutazioneST::prodotto(double F) {
 			arrayInversioni = new unsigned short[nInvApplicabili];
 
 			randomBS(p, nInvApplicabili, arrayInversioni);
+			
 		}
 
 		for (unsigned int k = 0; k < nInvApplicabili; k++) {
