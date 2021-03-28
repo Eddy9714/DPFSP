@@ -48,10 +48,10 @@ int main(int argc, char* argv[])
 	cout << "F massimo: " << Fmax << endl;
 	cout << "Normalizzazione attiva: " << (normalizzazione ? "Si" : "No") << endl;
 
-	*/
-
 	if(seed > 0) cout << "Seed: " << seed << endl;
 	else cout << "Seed: " << "Random" << endl << endl;
+
+	*/
 
 	using orologio = std::chrono::system_clock;
 	using sec = std::chrono::duration<double>;
@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
 		file.close();
 	}
 
-	cout << "Risultati salvati in: " << nomeReport << endl << endl;
+	//cout << "Risultati salvati in: " << nomeReport << endl << endl;
 
 	return 0;
 }
