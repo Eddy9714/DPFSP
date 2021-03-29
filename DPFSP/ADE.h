@@ -92,6 +92,7 @@ template <class T> class ADE {
 					*popolazioneAlternativa[i] = *(popolazione[treIndici[1]]);
 					popolazioneAlternativa[i]->differenza(popolazione[treIndici[2]]);
 					popolazioneAlternativa[i]->prodotto(vettoreF[i]);
+					if (normalizzazione) normalizza(popolazioneAlternativa[i]);
 					popolazioneAlternativa[i]->somma(popolazione[treIndici[0]]);
 				}
 
