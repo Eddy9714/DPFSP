@@ -93,8 +93,6 @@ template <class T> class ADE {
 					popolazioneAlternativa[i]->differenza(popolazione[treIndici[2]]);
 					popolazioneAlternativa[i]->prodotto(vettoreF[i]);
 					popolazioneAlternativa[i]->somma(popolazione[treIndici[0]]);
-
-					if (normalizzazione) normalizza(popolazioneAlternativa[i]);
 				}
 
 				ricercaLocaleRandomizzata(popolazioneAlternativa, nIndividui);
