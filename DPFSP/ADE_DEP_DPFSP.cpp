@@ -744,7 +744,7 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuoParziale(unsigned short* fabbrica, un
 	return makeSpan;
 ;}
 
-
+/*
 void ADE_DEP_DPFSP::normalizza(Permutazione* p) {
 	unsigned short contatore = istanza.lavori;
 	for (unsigned short i = 0; i < p->dimensione; i++) {
@@ -753,8 +753,8 @@ void ADE_DEP_DPFSP::normalizza(Permutazione* p) {
 		}
 	}
 }
+*/
 
-/*
 void ADE_DEP_DPFSP::normalizza(Permutazione* p) {
 	unsigned short* valoriMinimiF = new unsigned short[istanza.fabbriche];
 	unsigned short* indiciFabbriche = new unsigned short[istanza.fabbriche * 2];
@@ -834,7 +834,6 @@ void ADE_DEP_DPFSP::normalizza(Permutazione* p) {
 	delete[] valoriMinimiF;
 	delete[] indiciFabbriche;
 }
-*/
 
 Permutazione ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short scalaElaborazione, double theta,
 	double Fmin, double Fmax, bool normalizzazione, unsigned int seed) {
