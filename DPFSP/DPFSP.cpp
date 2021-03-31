@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 	unsigned short scalaElaborazione = 100;
 	unsigned int nIndividui = 50;
 	double theta = 0.05;
-	double Fmax = 1.2;
+	double Fmax = 1;
 	bool normalizzazione = false;
 	string percorsoFile;
 
@@ -58,6 +58,9 @@ int main(int argc, char* argv[])
 
 	const auto tempoIniziale = orologio::now();
 
+
+	//percorsoFile = "C:/users/edu4r/Desktop/DPFSP_Large/7/Ta016_7.txt";
+
 	ADE_DEP_DPFSP adeDep(percorsoFile);
 	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, scalaElaborazione, theta, 0.1, Fmax, 
 		normalizzazione, seed);
@@ -67,13 +70,11 @@ int main(int argc, char* argv[])
 	//Stampo a video le informazioni
 
 	/*
-
-	cout << "Risultati: " << endl << endl;
-	cout << "Tempo speso: " << durata.count() << " secondi" << endl;
-	cout << "Individuo: ";
-	migliorIndividuo.stampa();
-	cout << "Punteggio: " << migliorIndividuo.score << endl << endl;
-
+		cout << "Risultati: " << endl << endl;
+		cout << "Tempo speso: " << durata.count() << " secondi" << endl;
+		cout << "Individuo: ";
+		migliorIndividuo.stampa();
+		cout << "Punteggio: " << migliorIndividuo.score << endl << endl;
 	*/
 
 	//Salvo le informazioni su un CSV

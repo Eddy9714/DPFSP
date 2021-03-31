@@ -22,7 +22,7 @@ void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned 
 
 	//NEH2(popolazione[0]);
 	//popolazione[0]->score = valutaIndividuo(popolazione[0]);
-	if (normalizzazione) normalizza(popolazione[0]);
+	//if (normalizzazione) normalizza(popolazione[0]);
 
 	for (unsigned short i = 0; i < nIndividui; i++) {
 		popolazione[i]->random();
@@ -745,7 +745,7 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuoParziale(unsigned short* fabbrica, un
 ;}
 
 
-void ADE_DEP_DPFSP::ordinaFabbriche(Permutazione* p) {
+void ADE_DEP_DPFSP::normalizza(Permutazione* p) {
 	unsigned short contatore = istanza.lavori;
 	for (unsigned short i = 0; i < p->dimensione; i++) {
 		if (p->individuo[i] >= istanza.lavori) {
@@ -754,6 +754,7 @@ void ADE_DEP_DPFSP::ordinaFabbriche(Permutazione* p) {
 	}
 }
 
+/*
 void ADE_DEP_DPFSP::normalizza(Permutazione* p) {
 	unsigned short* valoriMinimiF = new unsigned short[istanza.fabbriche];
 	unsigned short* indiciFabbriche = new unsigned short[istanza.fabbriche * 2];
@@ -833,6 +834,7 @@ void ADE_DEP_DPFSP::normalizza(Permutazione* p) {
 	delete[] valoriMinimiF;
 	delete[] indiciFabbriche;
 }
+*/
 
 Permutazione ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short scalaElaborazione, double theta,
 	double Fmin, double Fmax, bool normalizzazione, unsigned int seed) {

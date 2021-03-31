@@ -78,6 +78,7 @@ template <class T> class ADE {
 
 				//cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
 
+
 				for (unsigned short i = 0; i < nIndividui; i++) {
 					indiciRandom->generaIndici(treIndici, 3);
 
@@ -93,6 +94,7 @@ template <class T> class ADE {
 					popolazioneAlternativa[i]->differenza(popolazione[treIndici[2]]);
 					popolazioneAlternativa[i]->prodotto(vettoreF[i]);
 					popolazioneAlternativa[i]->somma(popolazione[treIndici[0]]);
+
 				}
 
 				ricercaLocaleRandomizzata(popolazioneAlternativa, nIndividui);
@@ -108,7 +110,7 @@ template <class T> class ADE {
 				}
 			}
 
-			//cout << endl << endl;
+			cout << endl << endl;
 
 			ricercaLocale(popolazione[migliore]);
 
