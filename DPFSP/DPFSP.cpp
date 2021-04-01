@@ -69,12 +69,13 @@ int main(int argc, char* argv[])
 
 	//Stampo a video le informazioni
 
-	
+	/*
 	cout << "Risultati: " << endl << endl;
 	cout << "Tempo speso: " << durata.count() << " secondi" << endl;
 	cout << "Individuo: ";
 	migliorIndividuo.stampa();
 	cout << "Punteggio: " << migliorIndividuo.score << endl << endl;
+	*/
 	
 	//Salvo le informazioni su un CSV
 
