@@ -27,17 +27,23 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 		void creaPopolazione(Permutazione**, unsigned short);
 		void inizializzaPopolazione(Permutazione**, unsigned short, bool);
 		void selezionaPopolazione(Permutazione**, Permutazione**, unsigned short, double, unsigned short&, bool);
-		void ordinaFabbriche(Permutazione*);
 		void normalizza(Permutazione*);
 		void NEH2(Permutazione*);
 		void crossover(Permutazione*, Permutazione*);
 		void subCrossover(Permutazione*, Permutazione*, Permutazione*);
 		void ricercaLocale(Permutazione*);
 		void ricercaLocaleRandomizzata(Permutazione**, unsigned short);
+
 		void VND(Permutazione*, bool);
 		void LS1(Permutazione*, unsigned short, unsigned short);
 		int LS2(Permutazione*, unsigned int, int*, unsigned int*, bool);
 		void LS3(Permutazione*);
+		
+		void VNDEXC(Permutazione* p);
+		void LS1EXC(Permutazione* p, unsigned int, int*, unsigned int*);
+		bool LS2EXC(Permutazione*, unsigned int, unsigned int,
+			int*, unsigned int*);
+
 		InfoInserzione miglioreInserzione(unsigned short*, unsigned short, unsigned short);
 		unsigned int valutaIndividuoParziale(unsigned short*, unsigned short);
 		unsigned int valutaIndividuo(Permutazione*);

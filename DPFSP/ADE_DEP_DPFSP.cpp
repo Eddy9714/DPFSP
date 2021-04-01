@@ -24,7 +24,7 @@ void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned 
 	popolazione[0]->score = valutaIndividuo(popolazione[0]);
 	if (normalizzazione) normalizza(popolazione[0]);
 
-	for (unsigned short i = 0; i < nIndividui; i++) {
+	for (unsigned short i = 1; i < nIndividui; i++) {
 		popolazione[i]->random();
 		popolazione[i]->score = valutaIndividuo(popolazione[i]);
 		if(normalizzazione) normalizza(popolazione[i]);
@@ -60,7 +60,6 @@ void ADE_DEP_DPFSP::selezionaPopolazione(Permutazione** popolazione, Permutazion
 		}
 	}
 };
-
 
 void ADE_DEP_DPFSP::NEH2(Permutazione* individuo) {
 	unsigned int* p = new unsigned int[istanza.lavori];
@@ -238,6 +237,7 @@ void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazion
 void ADE_DEP_DPFSP::ricercaLocale(Permutazione* p) {
 	this->LS3(p);
 	VND(p, true);
+	//VNDEXC(p);
 	p->score = valutaIndividuo(p);
 }
 
@@ -247,7 +247,219 @@ void ADE_DEP_DPFSP::ricercaLocaleRandomizzata(Permutazione** popolazione, unsign
 	//Chiama VND sugli elementi selezionati
 	unsigned short posizioni[1];
 	indiciRandom->generaIndici(posizioni, 1);
+	//VNDEXC(popolazione[posizioni[0]]);
 	VND(popolazione[posizioni[0]], false);
+}
+
+void ADE_DEP_DPFSP::VNDEXC(Permutazione* p) {
+
+	bool miglioramento = true;
+	unsigned int* cFabbriche = new unsigned int[istanza.fabbriche];
+
+	int* indiciFabbriche = new int[istanza.fabbriche * 2];
+
+	indiciFabbriche[0] = 0;
+	indiciFabbriche[istanza.fabbriche * 2 - 1] = p->dimensione - 1;
+
+	unsigned short incremento = 0;
+
+	for (int i = 0; i < p->dimensione; i++) {
+		if (p->individuo[i] >= istanza.lavori) {
+			indiciFabbriche[++incremento] = i - 1;
+			indiciFabbriche[++incremento] = i + 1;
+		}
+	}
+
+	for (unsigned int k = 0, i = 0; k < istanza.fabbriche * 2; k += 2, i++) {
+		if (indiciFabbriche[k] < indiciFabbriche[k + 1]) {
+			cFabbriche[i] = valutaIndividuoParziale(&(p->individuo[indiciFabbriche[k]]),
+				indiciFabbriche[k + 1] - indiciFabbriche[k] + 1);
+		}
+		else cFabbriche[i] = 0;
+	}
+
+	unsigned int cPeggiore = 0, kPeggiore = 0, kMigliore, kSecondoPeggiore, cMigliore = UINT32_MAX;
+
+	//Trova fabbrica Fy con Cmax peggiore
+	for (unsigned int k = 0, i = 0; k < istanza.fabbriche * 2; k += 2, i++) {
+
+		if (indiciFabbriche[k] < indiciFabbriche[k + 1]) {
+			if (cFabbriche[i] > cPeggiore) {
+				kSecondoPeggiore = kPeggiore;
+				cPeggiore = cFabbriche[i];
+				kPeggiore = k;
+			}
+
+			if (cFabbriche[i] < cMigliore) {
+				cMigliore = cFabbriche[i];
+				kMigliore = k;
+			}
+		}
+		else cFabbriche[i] = 0;
+	}
+
+	while (miglioramento) {
+		//Ricerca locale sul peggiore
+		LS1EXC(p, kPeggiore, indiciFabbriche, cFabbriche);
+
+		cPeggiore = 0, kPeggiore = 0, kMigliore, kSecondoPeggiore, cMigliore = UINT32_MAX;
+		//Ricalcolo i peggiori, secondi peggiori, migliori
+		for (unsigned int k = 0, i = 0; k < istanza.fabbriche * 2; k += 2, i++) {
+
+			if (indiciFabbriche[k] < indiciFabbriche[k + 1]) {
+				if (cFabbriche[i] > cPeggiore) {
+					kSecondoPeggiore = kPeggiore;
+					cPeggiore = cFabbriche[i];
+					kPeggiore = k;
+				}
+
+				if (cFabbriche[i] < cMigliore) {
+					cMigliore = cFabbriche[i];
+					kMigliore = k;
+				}
+			}
+			else cFabbriche[i] = 0;
+		}
+
+		//Prendi fabbrica migliore e peggiore
+		//Scambia ciascun elemento della fabbrica migliore con quella peggiore
+		//Se scambio effettuato, applica scambi locali su fabbrica migliore e peggiore
+		
+		//Effettua L2 su Fy
+		int indiceFCambiata = -1;
+
+		if (LS2EXC(p, kPeggiore, kMigliore, indiciFabbriche, cFabbriche)) {
+			//Se cambiamento (Fx, Fy cambiati) effettua L1EXC su Fx, Fy
+			LS1EXC(p, kMigliore, indiciFabbriche, cFabbriche);
+
+			//C'è stato un miglioramento quindi makespan del peggiore è calato. Il peggiore sarà il massimo tra
+			// la migliore, la peggiore e la seconda peggiore
+
+			if (cFabbriche[kPeggiore / 2] < cFabbriche[kMigliore / 2]) {
+
+				if (cFabbriche[kSecondoPeggiore / 2] < cFabbriche[kMigliore / 2]) {
+					LS1EXC(p, kPeggiore, indiciFabbriche, cFabbriche);
+					kPeggiore = kMigliore;
+				}	
+				else {
+					LS1EXC(p, kPeggiore, indiciFabbriche, cFabbriche);
+					if(kSecondoPeggiore != kMigliore)
+						LS1EXC(p, kMigliore, indiciFabbriche, cFabbriche);
+
+					kPeggiore = kSecondoPeggiore;
+				}
+					
+			}
+			else if (cFabbriche[kPeggiore / 2] < cFabbriche[kSecondoPeggiore / 2]) {
+				LS1EXC(p, kPeggiore, indiciFabbriche, cFabbriche);
+				if (kSecondoPeggiore != kMigliore)
+					LS1EXC(p, kMigliore, indiciFabbriche, cFabbriche);
+				kPeggiore = kSecondoPeggiore;
+			}
+
+		}
+		else miglioramento = false;
+	}
+
+	delete[] indiciFabbriche;
+	delete[] cFabbriche;
+}
+
+void ADE_DEP_DPFSP::LS1EXC(Permutazione* p, unsigned int iF, int* indiciFabbriche, unsigned int* cFabbriche) {
+
+	unsigned short dimensioneFabbrica = indiciFabbriche[iF + 1] - indiciFabbriche[iF] + 1;
+
+	bool miglioramento = false;
+	unsigned short miglioreIndice1, miglioreIndice2, nuovoCosto, miglioreCosto = cFabbriche[iF / 2],
+		indice1, indice2, tmp;
+
+	for (unsigned short i = 0; i < dimensioneFabbrica - 1; i++) {
+		indice1 = indiciFabbriche[iF] + i;
+
+		for (unsigned short j = i + 1; j < dimensioneFabbrica; j++) {
+			indice2 = indiciFabbriche[iF] + j;
+
+			tmp = p->individuo[indice1];
+			p->individuo[indice1] = p->individuo[indice2];
+			p->individuo[indice2] = tmp;
+
+			nuovoCosto = valutaIndividuoParziale(&p->individuo[indiciFabbriche[iF]], dimensioneFabbrica);
+			if (nuovoCosto < miglioreCosto) {
+				miglioreCosto = nuovoCosto;
+				miglioreIndice1 = indice1;
+				miglioreIndice2 = indice2;
+				miglioramento = true;
+			}
+
+			tmp = p->individuo[indice1];
+			p->individuo[indice1] = p->individuo[indice2];
+			p->individuo[indice2] = tmp;
+		}
+	}
+
+	if (miglioramento) {
+		tmp = p->individuo[miglioreIndice1];
+		p->individuo[miglioreIndice1] = p->individuo[miglioreIndice2];
+		p->individuo[miglioreIndice2] = tmp;
+
+		cFabbriche[iF / 2] = miglioreCosto;
+	}
+}
+
+bool ADE_DEP_DPFSP::LS2EXC(Permutazione* p, unsigned int iFPeggiore, unsigned int iFMigliore,
+	int* indiciFabbriche, unsigned int* cFabbriche) {
+
+	unsigned short dimensioneFabbricaPeggiore = indiciFabbriche[iFPeggiore + 1] - indiciFabbriche[iFPeggiore] + 1;
+	unsigned short dimensioneFabbricaMigliore = indiciFabbriche[iFMigliore + 1] - indiciFabbriche[iFMigliore] + 1;
+
+	bool miglioramento = false;
+	unsigned short miglioreIndice1, miglioreIndice2, nuovoCosto1, nuovoCosto2, 
+		posizioneFPeggioreCorrente, posizioneFMiglioreCorrente, tmp;
+
+	unsigned int nuovoPunteggioPeggiore, nuovoPunteggioMigliore, guadagnoNET, migliorGuadagnoNET;
+	
+	for (unsigned short i = 0; i < dimensioneFabbricaPeggiore; i++) {
+
+		posizioneFPeggioreCorrente = indiciFabbriche[iFPeggiore] + i;
+
+		for (unsigned short j = 0; j < dimensioneFabbricaMigliore; j++) {
+
+			posizioneFMiglioreCorrente = indiciFabbriche[iFMigliore] + j;
+
+			tmp = p->individuo[posizioneFPeggioreCorrente];
+			p->individuo[posizioneFPeggioreCorrente] = p->individuo[posizioneFMiglioreCorrente];
+			p->individuo[posizioneFMiglioreCorrente] = tmp;
+			
+			nuovoPunteggioPeggiore = valutaIndividuoParziale(&p->individuo[indiciFabbriche[iFPeggiore]], dimensioneFabbricaPeggiore);
+			nuovoPunteggioMigliore = valutaIndividuoParziale(&p->individuo[indiciFabbriche[iFMigliore]], dimensioneFabbricaMigliore);
+
+			guadagnoNET = max(nuovoPunteggioMigliore, nuovoPunteggioPeggiore);
+
+			if (guadagnoNET < cFabbriche[iFPeggiore / 2]) {
+					migliorGuadagnoNET = guadagnoNET;
+					miglioreIndice1 = posizioneFPeggioreCorrente;
+					miglioreIndice2 = posizioneFMiglioreCorrente;
+					nuovoCosto1 = nuovoPunteggioPeggiore;
+					nuovoCosto2 = nuovoPunteggioMigliore;
+					miglioramento = true;
+			}
+
+			tmp = p->individuo[posizioneFPeggioreCorrente];
+			p->individuo[posizioneFPeggioreCorrente] = p->individuo[posizioneFMiglioreCorrente];
+			p->individuo[posizioneFMiglioreCorrente] = tmp;
+		}
+	}
+
+	if (miglioramento) {
+		tmp = p->individuo[miglioreIndice1];
+		p->individuo[miglioreIndice1] = p->individuo[miglioreIndice2];
+		p->individuo[miglioreIndice2] = tmp;
+
+		cFabbriche[iFPeggiore / 2] = nuovoCosto1;
+		cFabbriche[iFMigliore / 2] = nuovoCosto2;
+	}
+
+	return miglioramento;
 }
 
 void ADE_DEP_DPFSP::VND(Permutazione* p, bool A) {
@@ -328,7 +540,7 @@ void ADE_DEP_DPFSP::LS1(Permutazione* p, unsigned short inizioFabbrica, unsigned
 	unsigned short nLavoriFabbrica = fineFabbrica - inizioFabbrica + 1;
 
 	unsigned short* lavoriFabbrica = new unsigned short[nLavoriFabbrica - 1];
-
+	
 	unsigned int migliorPunteggio = valutaIndividuoParziale(&(p->individuo[inizioFabbrica]), nLavoriFabbrica);
 
 	do {
