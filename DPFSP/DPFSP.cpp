@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 	unsigned short scalaElaborazione = 100;
 	unsigned int nIndividui = 50;
 	double theta = 0.05;
-	double Fmax = 1;
+	double Fmax = 1.2;
 	bool normalizzazione = false;
 	string percorsoFile;
 

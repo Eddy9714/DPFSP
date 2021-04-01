@@ -237,7 +237,7 @@ void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazion
 void ADE_DEP_DPFSP::ricercaLocale(Permutazione* p) {
 	VNDEXC(p);
 	this->LS3(p);
-	VND(p, true);
+	//VND(p, true);
 	p->score = valutaIndividuo(p);
 }
 
@@ -248,15 +248,8 @@ void ADE_DEP_DPFSP::ricercaLocaleRandomizzata(Permutazione** popolazione, unsign
 	unsigned short posizioni[1];
 	indiciRandom->generaIndici(posizioni, 1);
 
-	Random r;
-
-	if (seed > 0)
-		r.impostaSeed(seed + 148148);
-
-	if(r.randDouble(0,1) < 0.5)
-		VNDEXC(popolazione[posizioni[0]]);
-	else
-		VND(popolazione[posizioni[0]], false);
+	VNDEXC(popolazione[posizioni[0]]);
+	//VND(popolazione[posizioni[0]], false);
 }
 
 void ADE_DEP_DPFSP::VNDEXC(Permutazione* p) {
