@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 			break;
 		case 1:
 			cerr << "Devi inserire il percorso del file!" << endl << endl;
-			exit(-1);
+			//exit(-1);
 	}
 
 	/*
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 	const auto tempoIniziale = orologio::now();
 
 
-	//percorsoFile = "C:/users/edu4r/Desktop/DPFSP_Large/2/Ta118_2.txt";
+	//percorsoFile = "C:/users/edu4r/Desktop/DPFSP_Large/2/Ta001_2.txt";
 
 	ADE_DEP_DPFSP adeDep(percorsoFile);
 	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, scalaElaborazione, theta, 0.1, Fmax, 
@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
 	const sec durata = orologio::now() - tempoIniziale;
 
 	//Stampo a video le informazioni
-
+	
 	/*
 	cout << "Risultati: " << endl << endl;
 	cout << "Tempo speso: " << durata.count() << " secondi" << endl;
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
 	migliorIndividuo.stampa();
 	cout << "Punteggio: " << migliorIndividuo.score << endl << endl;
 	*/
-	
+
 	//Salvo le informazioni su un CSV
 
 	int posizione = percorsoFile.find_last_of(".");

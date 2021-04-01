@@ -51,7 +51,8 @@ template <class T> class ADE {
 			if (seed > 0) ran.impostaSeed(seed + 541892);
 
 			for (unsigned short i = 0; i < nIndividui; i++) {
-				vettoreF[i] = Fmax;
+				//vettoreF[i] = 1;
+				vettoreF[i] = Fmin + ran.randDouble(0, 1) * (Fmax - Fmin);
 			}
 
 			unsigned short treIndici[3];
@@ -102,7 +103,11 @@ template <class T> class ADE {
 				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, migliore, normalizzazione);
 
 				for (unsigned short i = 0; i < nIndividui; i++) {
-					vettoreF[i] = Fmin + tempoRimasto.count()/tempoDisponibile.count() * (Fmax - Fmin);
+
+					if (ran.randDouble(0, 1) < 0.1)
+						vettoreF[i] = Fmin + ran.randDouble(0, 1) * (Fmax - Fmin);
+
+					//vettoreF[i] = Fmin + tempoRimasto / tempoDisponibile * (Fmax - Fmin);
 				}
 			}
 
