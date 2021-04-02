@@ -140,7 +140,7 @@ template <class T> class ADE {
 
 			ricercaLocale(popolazione[migliore]);
 
-			stampa(popolazione, nIndividui);
+			//stampa(popolazione, nIndividui);
 
 			T migliorIndividuo = *(popolazione[migliore]);
 
