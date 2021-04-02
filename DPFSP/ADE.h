@@ -79,7 +79,7 @@ template <class T> class ADE {
 				if (count <= 0.)
 					break;
 
-				cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
+				//cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
 				//stampa(popolazione, nIndividui);
 
 				unsigned short indiceRandom;

@@ -34,9 +34,10 @@ int main(int argc, char* argv[])
 			break;
 		case 1:
 			cerr << "Devi inserire il percorso del file!" << endl << endl;
-			//exit(-1);
+			exit(-1);
 	}
 
+	/*
 	cout << endl << endl;
 	cout << "Il programma sara' eseguito con queste impostazioni:" << endl << endl;
 	cout << "Percorso file: " << percorsoFile << endl;
@@ -48,6 +49,7 @@ int main(int argc, char* argv[])
 
 	if(seed > 0) cout << "Seed: " << seed << endl;
 	else cout << "Seed: " << "Random" << endl << endl;
+	*/
 
 	using orologio = std::chrono::system_clock;
 	using sec = std::chrono::duration<double>;
