@@ -9,9 +9,9 @@ void ADE_DEP_DPFSP::creaPopolazione(Permutazione** popolazione, unsigned short n
 
 	for (unsigned int k = 0; k < nIndividui; k++) {
 		if(seed > 0)
-			popolazione[k] = new PermutazioneI(istanza.lavori + istanza.fabbriche - 1, max(seed + 2ULL*k + 1746184ULL, 1ULL));
+			popolazione[k] = new PermutazioneT(istanza.lavori + istanza.fabbriche - 1, max(seed + 2ULL*k + 1746184ULL, 1ULL));
 		else 
-			popolazione[k] = new PermutazioneI(istanza.lavori + istanza.fabbriche - 1);
+			popolazione[k] = new PermutazioneT(istanza.lavori + istanza.fabbriche - 1);
 	}
 }
 
@@ -20,11 +20,11 @@ void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned 
 
 	if (seed > 0) r.impostaSeed(seed + 483984741);
 
-	//NEH2(popolazione[0]);
-	//popolazione[0]->score = valutaIndividuo(popolazione[0]);
-	//if (normalizzazione) normalizza(popolazione[0]);
+	NEH2(popolazione[0]);
+	popolazione[0]->score = valutaIndividuo(popolazione[0]);
+	if (normalizzazione) normalizza(popolazione[0]);
 
-	for (unsigned short i = 0; i < nIndividui; i++) {
+	for (unsigned short i = 1; i < nIndividui; i++) {
 		popolazione[i]->random();
 		popolazione[i]->score = valutaIndividuo(popolazione[i]);
 		if(normalizzazione) normalizza(popolazione[i]);
@@ -163,8 +163,8 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 
 void ADE_DEP_DPFSP::crossover(Permutazione* i1, Permutazione* i2) {
 
-	PermutazioneI p1(i1->dimensione, i1->seed);
-	PermutazioneI p2(i2->dimensione, i2->seed);
+	PermutazioneT p1(i1->dimensione, i1->seed);
+	PermutazioneT p2(i2->dimensione, i2->seed);
 
 	subCrossover(i1, i2, &p1);
 	subCrossover(i2, i1, &p2);
@@ -235,9 +235,9 @@ void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazion
 }
 
 void ADE_DEP_DPFSP::ricercaLocale(Permutazione* p) {
-	VNDEXC(p);
 	this->LS3(p);
-	//VND(p, true);
+	VND(p, true);
+	//VNDEXC(p);
 	p->score = valutaIndividuo(p);
 }
 
@@ -247,9 +247,8 @@ void ADE_DEP_DPFSP::ricercaLocaleRandomizzata(Permutazione** popolazione, unsign
 	//Chiama VND sugli elementi selezionati
 	unsigned short posizioni[1];
 	indiciRandom->generaIndici(posizioni, 1);
-
-	VNDEXC(popolazione[posizioni[0]]);
-	//VND(popolazione[posizioni[0]], false);
+	//VNDEXC(popolazione[posizioni[0]]);
+	VND(popolazione[posizioni[0]], false);
 }
 
 void ADE_DEP_DPFSP::VNDEXC(Permutazione* p) {

@@ -8,8 +8,8 @@ int main(int argc, char* argv[])
 	unsigned int seed = 0;
 	unsigned short scalaElaborazione = 100;
 	unsigned int nIndividui = 50;
-	double theta = 0.05;
-	double Fmax = 1.2;
+	double theta = 0.1;
+	double Fmax = 1;
 	bool normalizzazione = false;
 	string percorsoFile;
 
@@ -68,13 +68,15 @@ int main(int argc, char* argv[])
 	const sec durata = orologio::now() - tempoIniziale;
 
 	//Stampo a video le informazioni
-	
+
 	/*
 	cout << "Risultati: " << endl << endl;
 	cout << "Tempo speso: " << durata.count() << " secondi" << endl;
 	cout << "Individuo: ";
 	migliorIndividuo.stampa();
 	cout << "Punteggio: " << migliorIndividuo.score << endl << endl;
+	
+	exit(0);
 	*/
 
 	//Salvo le informazioni su un CSV

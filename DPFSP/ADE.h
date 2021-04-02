@@ -51,8 +51,8 @@ template <class T> class ADE {
 			if (seed > 0) ran.impostaSeed(seed + 541892);
 
 			for (unsigned short i = 0; i < nIndividui; i++) {
-				//vettoreF[i] = 1;
-				vettoreF[i] = Fmin + ran.randDouble(0, 1) * (Fmax - Fmin);
+				vettoreF[i] = Fmax;
+				//vettoreF[i] = Fmin + ran.randDouble(0, 1) * (Fmax - Fmin);
 			}
 
 			unsigned short treIndici[3];
@@ -79,6 +79,7 @@ template <class T> class ADE {
 					break;
 
 				//cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
+				//stampa(popolazione, nIndividui);
 
 				for (unsigned short i = 0; i < nIndividui; i++) {
 					indiciRandom->generaIndici(treIndici, 3);
@@ -103,17 +104,18 @@ template <class T> class ADE {
 				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, migliore, normalizzazione);
 
 				for (unsigned short i = 0; i < nIndividui; i++) {
+					/*if (ran.randDouble(0, 1) < 0.1)
+						vettoreF[i] = Fmin + ran.randDouble(0, 1) * (Fmax - Fmin);*/
 
-					if (ran.randDouble(0, 1) < 0.1)
-						vettoreF[i] = Fmin + ran.randDouble(0, 1) * (Fmax - Fmin);
-
-					//vettoreF[i] = Fmin + tempoRimasto / tempoDisponibile * (Fmax - Fmin);
+					vettoreF[i] = Fmin + tempoRimasto / tempoDisponibile * (Fmax - Fmin);
 				}
 			}
 
 			//cout << endl << endl;
 
 			ricercaLocale(popolazione[migliore]);
+
+			//stampa(popolazione, nIndividui);
 
 			T migliorIndividuo = *(popolazione[migliore]);
 
