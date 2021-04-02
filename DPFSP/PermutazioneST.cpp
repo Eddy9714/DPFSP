@@ -4,17 +4,11 @@ using namespace std;
 
 PermutazioneST::PermutazioneST(const PermutazioneST& p) : Permutazione(p) {}
 
-PermutazioneST::PermutazioneST(unsigned short d, unsigned int seed) : Permutazione(d, seed) {}
-
 PermutazioneST::PermutazioneST(unsigned short d) : Permutazione(d) {}
-
-PermutazioneST::PermutazioneST(unsigned short* p, unsigned short d, unsigned int seed) : Permutazione(p, d, seed) {};
 
 PermutazioneST::PermutazioneST(unsigned short* p, unsigned short d) : Permutazione(p, d) {}
 
 void PermutazioneST::prodotto(double F) {
-	seed = max(1ULL, (unsigned long long)((1 + F) * seed));
-
 	if (F >= 0) {
 		unsigned int numeroInversioniMassime = dimensione * (dimensione - 1) / 2;
 
@@ -62,7 +56,7 @@ void PermutazioneST::prodotto(double F) {
 
 void PermutazioneST::randomBS(PermutazioneST& p, unsigned int limiteTrasposizioni, unsigned short* risultato) {
 
-	PermutazioneST pCopia(p.individuo, p.dimensione, p.seed);
+	PermutazioneST pCopia(p.individuo, p.dimensione);
 
 	unsigned short* zeta = new unsigned short[p.dimensione - 1];
 	unsigned short cursoreZeta = 0;
@@ -75,15 +69,11 @@ void PermutazioneST::randomBS(PermutazioneST& p, unsigned int limiteTrasposizion
 			zeta[cursoreZeta++] = i;
 	}
 
-	Random r;
-
-	if (seed > 0) r.impostaSeed(seed + 54145914974281ULL);
-
 	unsigned short random, randomZeta, temp;
 
 	while (cursoreZeta > 0 && contatoreTrasposizioni < limiteTrasposizioni) {
 
-		random = r.randIntU(0, cursoreZeta - 1);
+		random = genRand.randIntU(0, cursoreZeta - 1);
 		randomZeta = zeta[random];
 
 		risultato[contatoreTrasposizioni++] = randomZeta;

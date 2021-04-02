@@ -1,36 +1,18 @@
 #pragma once
 #include "IndiciRandom.h"
 
-IndiciRandom::IndiciRandom(unsigned short d) {
+IndiciRandom::IndiciRandom(Random* r, unsigned short d) {
 	dimensione = d;
 	vettoreIndici = new unsigned short[d];
-	random = new Random();
+	random = r;
 
 	for (int k = 0; k < d; k++) {
 		vettoreIndici[k] = k;
 	}
 }
-
-IndiciRandom::IndiciRandom(unsigned short d, unsigned int seed) {
-	dimensione = d;
-	vettoreIndici = new unsigned short[d];
-	random = new Random();
-
-	for (int k = 0; k < d; k++) {
-		vettoreIndici[k] = k;
-	}
-
-	random->impostaSeed(seed);
-}
-
 
 IndiciRandom::~IndiciRandom() {
 	delete[] vettoreIndici;
-	delete random;
-}
-
-void IndiciRandom::impostaSeed(unsigned int seed) {
-	random->impostaSeed(seed);
 }
 
 void IndiciRandom::generaIndici(unsigned short risultato[], unsigned short nIndiciGenerati) {

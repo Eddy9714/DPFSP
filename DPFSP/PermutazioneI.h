@@ -7,8 +7,6 @@ class PermutazioneI : public Permutazione {
 
 	public:
 		PermutazioneI(unsigned short);
-		PermutazioneI(unsigned short, unsigned int);
-		PermutazioneI(unsigned short*, unsigned short, unsigned int);
 		PermutazioneI(unsigned short*, unsigned short);
 		PermutazioneI(const PermutazioneI& p);
 

@@ -1,8 +1,9 @@
 #pragma once
 #include "ADE.h"
+#include "Globali.h"
 #include "Istanza.h"
 #include "Permutazione.h"
-#include "PermutazioneT.h"
+#include "PermutazioneI.h"
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -26,7 +27,7 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 
 		void creaPopolazione(Permutazione**, unsigned short);
 		void inizializzaPopolazione(Permutazione**, unsigned short, bool);
-		void selezionaPopolazione(Permutazione**, Permutazione**, unsigned short, double, unsigned short&, bool);
+		void selezionaPopolazione(Permutazione**, Permutazione**, unsigned short, double, unsigned short&, bool, bool*);
 		void normalizza(Permutazione*);
 		void NEH2(Permutazione*);
 		void crossover(Permutazione*, Permutazione*);
@@ -37,7 +38,6 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 		void VND(Permutazione*, bool);
 		void LS1(Permutazione*, unsigned short, unsigned short);
 		int LS2(Permutazione*, unsigned int, int*, unsigned int*, bool);
-		void LS3(Permutazione*);
 		
 		void VNDEXC(Permutazione* p);
 		void LS1EXC(Permutazione* p, unsigned int, int*, unsigned int*);

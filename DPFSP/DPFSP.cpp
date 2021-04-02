@@ -8,8 +8,8 @@ int main(int argc, char* argv[])
 	unsigned int seed = 0;
 	unsigned short scalaElaborazione = 100;
 	unsigned int nIndividui = 50;
-	double theta = 0.1;
-	double Fmax = 1;
+	double theta = 0.05;
+	double Fmax = 1.2;
 	bool normalizzazione = false;
 	string percorsoFile;
 
@@ -37,8 +37,6 @@ int main(int argc, char* argv[])
 			//exit(-1);
 	}
 
-	/*
-
 	cout << endl << endl;
 	cout << "Il programma sara' eseguito con queste impostazioni:" << endl << endl;
 	cout << "Percorso file: " << percorsoFile << endl;
@@ -51,15 +49,13 @@ int main(int argc, char* argv[])
 	if(seed > 0) cout << "Seed: " << seed << endl;
 	else cout << "Seed: " << "Random" << endl << endl;
 
-	*/
-
 	using orologio = std::chrono::system_clock;
 	using sec = std::chrono::duration<double>;
 
 	const auto tempoIniziale = orologio::now();
 
 
-	//percorsoFile = "C:/users/edu4r/Desktop/DPFSP_Large/2/Ta001_2.txt";
+	//percorsoFile = "C:/users/edu4r/Desktop/DPFSP_Large/2/Ta041_2.txt";
 
 	ADE_DEP_DPFSP adeDep(percorsoFile);
 	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, scalaElaborazione, theta, 0.1, Fmax, 

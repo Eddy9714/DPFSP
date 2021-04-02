@@ -1,14 +1,12 @@
 #pragma once
 #include <cstring>
-#include "Random.h"
+#include "Globali.h"
 #include <iostream>
 
 class Permutazione {
 
 	public:
 		Permutazione(unsigned short);
-		Permutazione(unsigned short, unsigned int);
-		Permutazione(unsigned short*, unsigned short, unsigned int);
 		Permutazione(unsigned short*, unsigned short);
 		Permutazione(const Permutazione& p);
 		virtual ~Permutazione();
@@ -26,5 +24,4 @@ class Permutazione {
 		unsigned short* individuo;
 		const unsigned short dimensione;
 		unsigned int score = 0;
-		unsigned int seed = 0;
 };

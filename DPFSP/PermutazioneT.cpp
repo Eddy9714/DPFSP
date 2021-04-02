@@ -4,16 +4,11 @@ using namespace std;
 
 PermutazioneT::PermutazioneT(const PermutazioneT& p) : Permutazione(p) {}
 
-PermutazioneT::PermutazioneT(unsigned short d, unsigned int seed) : Permutazione(d, seed) {}
-
 PermutazioneT::PermutazioneT(unsigned short d) : Permutazione(d) {}
-
-PermutazioneT::PermutazioneT(unsigned short* p, unsigned short d, unsigned int seed) : Permutazione(p, d, seed) {};
 
 PermutazioneT::PermutazioneT(unsigned short* p, unsigned short d) : Permutazione(p, d) {}
 
 void PermutazioneT::prodotto(double F) {
-	seed = max(1U, (unsigned int)((1 + F) * seed));
 
 	if (F >= 0) {
 
@@ -44,9 +39,6 @@ void PermutazioneT::prodotto(double F) {
 }
 
 void PermutazioneT::randomSS(PermutazioneT* p, unsigned short& spostamenti, double F, Coppia* coppie) {
-
-	Random ran;
-	if (seed > 0) ran.impostaSeed(seed + 984128);
 
 	unsigned short** c = new unsigned short*[p->dimensione];
 	unsigned short* lc = new unsigned short [p->dimensione];
@@ -86,14 +78,14 @@ void PermutazioneT::randomSS(PermutazioneT* p, unsigned short& spostamenti, doub
 	spostamenti = 0;
 	while (nc > 0 && nit < lim) {
 
-		r = ran.randIntU(0, nexc-1);
+		r = genRand.randIntU(0, nexc-1);
 		psum = 0;
 		for (k = 0; k < nc; k++) {
 			psum += lc[k] * (lc[k] - 1) / 2;
 			if (r < psum) break;
 		}
 
-		ran.dueIndiciRandom(lc[k], i, j);
+		genRand.dueIndiciRandom(lc[k], i, j);
 
 		coppie[spostamenti].x = c[k][i];
 		coppie[spostamenti].y = c[k][j];
@@ -159,9 +151,6 @@ void PermutazioneT::randomSS(PermutazioneT* p, unsigned short& spostamenti, doub
 
 void PermutazioneT::randomMergeSS(PermutazioneT* p, unsigned short& spostamenti, double F, Coppia* coppie) {
 
-	Random ran;
-	if (seed > 0) ran.impostaSeed(seed + 414528);
-
 	unsigned short** c = new unsigned short* [p->dimensione];
 	unsigned short* lc = new unsigned short[p->dimensione];
 	bool* v = new bool[p->dimensione];
@@ -194,22 +183,22 @@ void PermutazioneT::randomMergeSS(PermutazioneT* p, unsigned short& spostamenti,
 	spostamenti = 0;
 	while (nc > 1 && nit < lim) {
 		
-		r = ran.randIntU(0, p1sum - 1);
+		r = genRand.randIntU(0, p1sum - 1);
 		psum = 0;
 		for (i = 0; i < nc; i++) {
 			psum += lc[i] * (p->dimensione - lc[i]);
 			if (r < psum) break;
 		}
 		
-		r = ran.randIntU(0, p->dimensione - lc[i] - 1);
+		r = genRand.randIntU(0, p->dimensione - lc[i] - 1);
 		psum = 0;
 		for (j = 0; j < nc; j++) {
 			if (j != i) psum += lc[j];
 			if (r < psum) break;
 		}
 		
-		coppie[spostamenti].x = c[i][ran.randIntU(0, lc[i] - 1)];
-		coppie[spostamenti].y = c[j][ran.randIntU(0, lc[j] - 1)];
+		coppie[spostamenti].x = c[i][genRand.randIntU(0, lc[i] - 1)];
+		coppie[spostamenti].y = c[j][genRand.randIntU(0, lc[j] - 1)];
 		spostamenti++;
 
 		p1sum -= lc[i] * (p->dimensione - lc[i]) + lc[j] * (p->dimensione - lc[j]);

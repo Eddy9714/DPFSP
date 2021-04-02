@@ -8,18 +8,11 @@ ADE_DEP_DPFSP::ADE_DEP_DPFSP(string percorso) : istanza(Istanza(percorso)) {}
 void ADE_DEP_DPFSP::creaPopolazione(Permutazione** popolazione, unsigned short nIndividui) {
 
 	for (unsigned int k = 0; k < nIndividui; k++) {
-		if(seed > 0)
-			popolazione[k] = new PermutazioneT(istanza.lavori + istanza.fabbriche - 1, max(seed + 2ULL*k + 1746184ULL, 1ULL));
-		else 
-			popolazione[k] = new PermutazioneT(istanza.lavori + istanza.fabbriche - 1);
+		popolazione[k] = new PermutazioneI(istanza.lavori + istanza.fabbriche - 1);
 	}
 }
 
 void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned short nIndividui, bool normalizzazione) {
-	Random r;
-
-	if (seed > 0) r.impostaSeed(seed + 483984741);
-
 	NEH2(popolazione[0]);
 	popolazione[0]->score = valutaIndividuo(popolazione[0]);
 	if (normalizzazione) normalizza(popolazione[0]);
@@ -32,12 +25,7 @@ void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned 
 }
 
 void ADE_DEP_DPFSP::selezionaPopolazione(Permutazione** popolazione, Permutazione** popolazioneAlternativa,
-	unsigned short nIndividui, double theta, unsigned short& migliore, bool normalizzazione) {
-
-	Random r;
-
-	if (seed > 0)
-		r.impostaSeed(seed + 95815591);
+	unsigned short nIndividui, double theta, unsigned short& migliore, bool normalizzazione, bool* vettoreSuccessi) {
 
 	double delta;
 
@@ -48,16 +36,19 @@ void ADE_DEP_DPFSP::selezionaPopolazione(Permutazione** popolazione, Permutazion
 		//Seleziona individui
 		delta = ((int)popolazioneAlternativa[i]->score - (int)popolazione[i]->score) / (double)popolazione[i]->score;
 
-		if (popolazioneAlternativa[i]->score < popolazione[i]->score || 
-			(i != migliore && r.randDouble(0, 1) < max(theta - delta, 0.))) {
+		if (popolazioneAlternativa[i]->score < popolazione[i]->score ||
+			(i != migliore && genRand.randDouble(0, 1) < max(theta - delta, 0.))) {
 
 			if (popolazioneAlternativa[i]->score < popolazione[migliore]->score) {
 				migliore = i;
 			}
 
 			popolazione[i]->scambia(popolazioneAlternativa[i]);
-			if(normalizzazione) normalizza(popolazione[i]);
+			if (normalizzazione) normalizza(popolazione[i]);
+
+			vettoreSuccessi[i] = true;
 		}
+		else vettoreSuccessi[i] = false;
 	}
 };
 
@@ -163,8 +154,8 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 
 void ADE_DEP_DPFSP::crossover(Permutazione* i1, Permutazione* i2) {
 
-	PermutazioneT p1(i1->dimensione, i1->seed);
-	PermutazioneT p2(i2->dimensione, i2->seed);
+	PermutazioneI p1(i1->dimensione);
+	PermutazioneI p2(i2->dimensione);
 
 	subCrossover(i1, i2, &p1);
 	subCrossover(i2, i1, &p2);
@@ -177,9 +168,6 @@ void ADE_DEP_DPFSP::crossover(Permutazione* i1, Permutazione* i2) {
 }
 
 void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazione* ris) {
-
-	Random r;
-	if (ris->seed > 0) r.impostaSeed(ris->seed + 947103);
 
 	bool* daEliminare = new bool[i1->dimensione];
 	unsigned short* indiceTagli = new unsigned short[istanza.fabbriche * 2];
@@ -194,8 +182,8 @@ void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazion
 
 		if (i1->individuo[i] >= istanza.lavori || i == i1->dimensione) {
 
-			if (f == 0) indiceTagli[0] = r.randIntU(0, i);
-			else indiceTagli[f] = r.randIntU(indiceTagli[f - 1] + 1, i);
+			if (f == 0) indiceTagli[0] = genRand.randIntU(0, i);
+			else indiceTagli[f] = genRand.randIntU(indiceTagli[f - 1] + 1, i);
 
 			indiceTagli[f + 1] = i;
 
@@ -235,9 +223,8 @@ void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazion
 }
 
 void ADE_DEP_DPFSP::ricercaLocale(Permutazione* p) {
-	this->LS3(p);
-	VND(p, true);
-	//VNDEXC(p);
+	VND(p, false);
+	VNDEXC(p);
 	p->score = valutaIndividuo(p);
 }
 
@@ -349,21 +336,14 @@ void ADE_DEP_DPFSP::VNDEXC(Permutazione* p) {
 }
 
 void ADE_DEP_DPFSP::LS1EXC(Permutazione* p, unsigned int iF, int* indiciFabbriche, unsigned int* cFabbriche) {
-
-	Random r;
-	if (seed > 0)
-		r.impostaSeed(seed + 1831471);
 	
 	unsigned short dimensioneFabbrica = indiciFabbriche[iF + 1] - indiciFabbriche[iF] + 1;
 
-	unsigned short  posizioniDaSelezionare = min(dimensioneFabbrica, (unsigned short)r.randIntU(2, 50));
+	unsigned short  posizioniDaSelezionare = min(dimensioneFabbrica, (unsigned short)genRand.randIntU(2, 50));
 
 	unsigned short* indici = new unsigned short[posizioniDaSelezionare];
 	
-	IndiciRandom indRand(dimensioneFabbrica);
-
-	if (seed > 0)
-		indRand.impostaSeed(seed + 1471471);
+	IndiciRandom indRand(&genRand, dimensioneFabbrica);
 
 	indRand.generaIndici(indici, posizioniDaSelezionare);
 
@@ -409,11 +389,6 @@ void ADE_DEP_DPFSP::LS1EXC(Permutazione* p, unsigned int iF, int* indiciFabbrich
 bool ADE_DEP_DPFSP::LS2EXC(Permutazione* p, unsigned int iFPeggiore, unsigned int iFMigliore,
 	int* indiciFabbriche, unsigned int* cFabbriche) {
 
-	Random r;
-
-	if (seed > 0)
-		r.impostaSeed(seed + 174819);
-
 	unsigned short dimensioneFabbricaPeggiore = indiciFabbriche[iFPeggiore + 1] - indiciFabbriche[iFPeggiore] + 1;
 	unsigned short dimensioneFabbricaMigliore = indiciFabbriche[iFMigliore + 1] - indiciFabbriche[iFMigliore] + 1;
 
@@ -423,19 +398,14 @@ bool ADE_DEP_DPFSP::LS2EXC(Permutazione* p, unsigned int iFPeggiore, unsigned in
 
 	unsigned int nuovoPunteggioPeggiore, nuovoPunteggioMigliore, guadagnoNET, migliorGuadagnoNET;
 
-	unsigned short posizioniDaSelezionareP = min(dimensioneFabbricaPeggiore, (unsigned short)r.randIntU(2, 50));
-	unsigned short posizioniDaSelezionareM = min(dimensioneFabbricaMigliore, (unsigned short)r.randIntU(2, 50));
+	unsigned short posizioniDaSelezionareP = min(dimensioneFabbricaPeggiore, (unsigned short)genRand.randIntU(2, 50));
+	unsigned short posizioniDaSelezionareM = min(dimensioneFabbricaMigliore, (unsigned short)genRand.randIntU(2, 50));
 
-	IndiciRandom iP(dimensioneFabbricaPeggiore);
-	IndiciRandom iM(dimensioneFabbricaMigliore);
+	IndiciRandom iP(&genRand, dimensioneFabbricaPeggiore);
+	IndiciRandom iM(&genRand, dimensioneFabbricaMigliore);
 
 	unsigned short* indici1 = new unsigned short[posizioniDaSelezionareP];
 	unsigned short* indici2 = new unsigned short[posizioniDaSelezionareM];
-
-	if (seed > 0) {
-		iP.impostaSeed(seed + 858159);
-		iM.impostaSeed(seed + 290412);
-	}
 		
 	iP.generaIndici(indici1, posizioniDaSelezionareP);
 	iM.generaIndici(indici2, posizioniDaSelezionareM);
@@ -730,133 +700,6 @@ int ADE_DEP_DPFSP::LS2(Permutazione* p, unsigned int indiceFabbrica, int* indici
 	if(nLavoriFabbrica > 1) delete[] lavoriFabbrica;
 
 	return migliorGuadagno != -1 ? posizioneFabbricaCambiata / 2 : -1;
-}
-
-void ADE_DEP_DPFSP::LS3(Permutazione* p) {
-
-	unsigned int* cFabbriche = new unsigned int[istanza.fabbriche];
-	int* indiciFabbriche = new int[istanza.fabbriche * 2];
-
-	indiciFabbriche[0] = 0;
-	indiciFabbriche[istanza.fabbriche * 2 - 1] = p->dimensione - 1;
-
-	unsigned short incremento = 0;
-
-	for (int i = 0; i < p->dimensione; i++) {
-		if (p->individuo[i] >= istanza.lavori) {
-			indiciFabbriche[++incremento] = i - 1;
-			indiciFabbriche[++incremento] = i + 1;
-		}
-	}
-
-	unsigned int cPeggiore = 0;
-	unsigned int kPeggiore = 0;
-
-	for (unsigned int k = 0, i = 0; k < istanza.fabbriche * 2; k += 2, i++) {
-
-		if (indiciFabbriche[k] < indiciFabbriche[k + 1]) {
-			cFabbriche[i] = valutaIndividuoParziale(&(p->individuo[indiciFabbriche[k]]),
-				indiciFabbriche[k + 1] - indiciFabbriche[k] + 1);
-			if (cFabbriche[i] > cPeggiore) {
-				cPeggiore = cFabbriche[i];
-				kPeggiore = k;
-			}
-		}
-		else cFabbriche[i] = 0;
-	}
-
-	unsigned short cnt = 0;
-	unsigned short lavorifMax = indiciFabbriche[kPeggiore + 1] - indiciFabbriche[kPeggiore] + 1;
-
-	unsigned short* indiciCasuali = new unsigned short[lavorifMax];
-	IndiciRandom r(lavorifMax);
-
-	if (seed > 0) r.impostaSeed(seed + 692759301746ULL);
-	r.generaIndici(indiciCasuali, lavorifMax);
-
-	unsigned short posizioneMiglioreFabbrica = 0;
-	InfoInserzione info = {UINT32_MAX, 0};
-
-	while (cnt < lavorifMax) {
-		unsigned short lavorofMax = p->individuo[indiciFabbriche[kPeggiore] + indiciCasuali[cnt]];
-
-		for (unsigned short f = 0; f < istanza.fabbriche * 2; f+= 2) {
-			if (cFabbriche[f/2] + istanza.minp[lavorofMax] < cPeggiore) {
-				InfoInserzione infoInserzione = miglioreInserzione(&(p->individuo[indiciFabbriche[f]]),
-					indiciFabbriche[f + 1] - indiciFabbriche[f] + 1, lavorofMax);
-
-				if (infoInserzione.makeSpan < info.makeSpan) {
-					info = infoInserzione;
-					posizioneMiglioreFabbrica = f;
-				}
-			}
-		}
-
-		if (info.makeSpan < cPeggiore) {
-			unsigned short posizioneLavoroRimosso = indiciFabbriche[kPeggiore] + indiciCasuali[cnt];
-			unsigned short posizioneLavoroInserito = indiciFabbriche[posizioneMiglioreFabbrica] + info.posizione;
-
-			//Applica modifica
-			//Aggiorna indici fabbriche
-			if (posizioneLavoroRimosso < posizioneLavoroInserito) {
-				for (unsigned short i = posizioneLavoroRimosso; i < posizioneLavoroInserito - 1; i++) {
-					p->individuo[i] = p->individuo[i + 1];
-				}
-
-				p->individuo[posizioneLavoroInserito - 1] = lavorofMax;
-
-				//Aggiorniamo gli indici delle fabbriche, scalando di 1 le posizioni
-				for (unsigned int k = kPeggiore + 1; k <= posizioneMiglioreFabbrica; k++) {
-					indiciFabbriche[k]--;
-				}
-
-			}
-			else {
-				for (unsigned short i = posizioneLavoroRimosso; i > posizioneLavoroInserito; i--) {
-					p->individuo[i] = p->individuo[i - 1];
-				}
-
-				//Aggiorniamo gli indici delle fabbriche, scalando di 1 le posizioni
-				for (unsigned int k = posizioneMiglioreFabbrica + 1; k <= kPeggiore; k++) {
-					indiciFabbriche[k]++;
-				}
-
-				p->individuo[posizioneLavoroInserito] = lavorofMax;
-			}
-			
-			//Aggiorna costo fabbriche Cmax e fbest
-			cFabbriche[kPeggiore / 2] = valutaIndividuoParziale(&(p->individuo[indiciFabbriche[kPeggiore]]),
-				indiciFabbriche[kPeggiore + 1] - indiciFabbriche[kPeggiore] + 1);
-			cFabbriche[posizioneMiglioreFabbrica / 2] = info.makeSpan;
-			
-			//Ottieni indice e valore della nuova fabbrica peggiore
-			cPeggiore = cFabbriche[kPeggiore / 2];
-			for (unsigned short f = 0; f < istanza.fabbriche; f++) {
-				if (cFabbriche[f] > cPeggiore) {
-					kPeggiore = 2*f;
-					cPeggiore = cFabbriche[f];
-				}
-			}
-
-			lavorifMax = indiciFabbriche[kPeggiore + 1] - indiciFabbriche[kPeggiore] + 1;
-
-			delete[] indiciCasuali;
-			indiciCasuali = new unsigned short[lavorifMax];
-			IndiciRandom r(lavorifMax);
-			if (seed > 0) r.impostaSeed(seed + 884092);
-			r.generaIndici(indiciCasuali, lavorifMax);
-
-			info.makeSpan = UINT32_MAX;
-			info.posizione = 0;
-
-			cnt = 0;
-		}
-		else cnt++;
-	}
-
-	delete[] indiciCasuali;
-	delete[] cFabbriche;
-	delete[] indiciFabbriche;
 }
 
 ADE_DEP_DPFSP::InfoInserzione ADE_DEP_DPFSP::miglioreInserzione(unsigned short* vettoreFabbrica, 

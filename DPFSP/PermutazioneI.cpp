@@ -4,17 +4,11 @@ using namespace std;
 
 PermutazioneI::PermutazioneI(const PermutazioneI& p) : Permutazione(p) {}
 
-PermutazioneI::PermutazioneI(unsigned short d, unsigned int seed) : Permutazione(d, seed) {}
-
 PermutazioneI::PermutazioneI(unsigned short d) : Permutazione(d) {}
-
-PermutazioneI::PermutazioneI(unsigned short* p, unsigned short d, unsigned int seed) : Permutazione(p, d, seed) {};
 
 PermutazioneI::PermutazioneI(unsigned short* p, unsigned short d) : Permutazione(p, d) {}
 
 void PermutazioneI::prodotto(double F) {
-	seed = max(1U, (unsigned int)((1 + F) * seed));
-
 	if (F >= 0) {
 
 		unsigned short spostamenti;
@@ -58,10 +52,6 @@ void PermutazioneI::prodotto(double F) {
 }
 
 void PermutazioneI::randomIS(PermutazioneI* p, unsigned short& spostamenti, double F, Coppia* risultato, int limiteSpostamenti){
-
-	Random r;
-	if (seed > 0) r.impostaSeed(seed + 124498728);
-
 	int i, ind, a = 0, j, k = 0, y, b, m, ul, w;
 	unsigned short ll;
 	double tempDouble;
@@ -97,7 +87,7 @@ void PermutazioneI::randomIS(PermutazioneI* p, unsigned short& spostamenti, doub
 			else { 
 				q[y]++;
 				
-				if (r.randIntU(0, q[y] - 1) == 0) {   
+				if (genRand.randIntU(0, q[y] - 1) == 0) {   
 					m = y - 1;         
 					u[--ul] = lis[m];
 					lis[m] = i;       
@@ -137,13 +127,13 @@ void PermutazioneI::randomIS(PermutazioneI* p, unsigned short& spostamenti, doub
 			a = su[i] == 0 ? 0 : lis[su[i] - 1];    
 			y = a == b ? 1 : b - a;                  
 			m += y;                                
-			if (r.randIntU(0, m - 1) < y)                     
+			if (genRand.randIntU(0, m - 1) < y)                     
 				k = i;                          
 		}
 		i = u[k]; 
 		b = su[k] == ll ? p->dimensione : lis[su[k]];           
 		a = su[k] == 0 ? 0 : lis[su[k] - 1];         
-		j = a == b ? a : (a + (i < a ? 0 : 1) + r.randIntU(0, b - a - 1));
+		j = a == b ? a : (a + (i < a ? 0 : 1) + genRand.randIntU(0, b - a - 1));
 		risultato[w].x = i;	
 		risultato[w].y = j; 
 		w++;

@@ -27,6 +27,16 @@ class Random {
 			i2 = (i1 + 1 + randIntU(0, dimensione - 2)) % dimensione;
 		}
 
+		double cauchy(double a, double b) {
+			std::cauchy_distribution<double> distrib(a, b);
+			return distrib(gen);
+		}
+
+		double normale(double m, double s) {
+			std::normal_distribution<double> distrib(m, s);
+			return distrib(gen);
+		}
+
 		double randDouble(double a, double b) {
 			uniform_real_distribution<double> distrib(a, b);
 			return distrib(gen);

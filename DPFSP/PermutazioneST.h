@@ -8,8 +8,6 @@ class PermutazioneST : public Permutazione {
 
 	public:
 		PermutazioneST(unsigned short);
-		PermutazioneST(unsigned short, unsigned int);
-		PermutazioneST(unsigned short*, unsigned short, unsigned int);
 		PermutazioneST(unsigned short*, unsigned short);
 		PermutazioneST(const PermutazioneST& p);
 

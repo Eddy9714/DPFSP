@@ -12,10 +12,8 @@ class IndiciRandom {
 		Random* random;
 
 	public:
-		IndiciRandom(unsigned short);
-		IndiciRandom(unsigned short, unsigned int);
+		IndiciRandom(Random*, unsigned short);
 		~IndiciRandom();
 		void generaIndici(unsigned short[], unsigned short);
-		void impostaSeed(unsigned int);
 };
 
