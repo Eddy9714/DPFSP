@@ -3,6 +3,7 @@
 #include "Globali.h"
 #include <chrono>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -16,7 +17,7 @@ template <class T> class ADE {
 		virtual void inizializzaPopolazione(T**, unsigned short, bool) = 0;
 		virtual void crossover(T*, T*) = 0;
 		virtual void normalizza(T*) = 0;
-		virtual void selezionaPopolazione(T**, T**, unsigned short, double, unsigned short&, bool, bool*) = 0;
+		virtual void selezionaPopolazione(T**, T**, unsigned short, double, bool, bool*) = 0;
 		virtual void ricercaLocaleRandomizzata(T**, unsigned short) = 0;
 		virtual void ricercaLocale(T*) = 0;
 		virtual unsigned int valutaIndividuo(T*) = 0;
@@ -33,10 +34,12 @@ template <class T> class ADE {
 			if(seed > 0) genRand.impostaSeed(seed);
 
 			T** popolazione = new T * [nIndividui];
-			T** popolazioneAlternativa = new T * [nIndividui];
+			T** popolazioneAlternativa = new T * [nIndividui + 1];
 
 			creaPopolazione(popolazione, nIndividui);
-			creaPopolazione(popolazioneAlternativa, nIndividui);
+
+			//L'ultimo elemento è di appoggio
+			creaPopolazione(popolazioneAlternativa, nIndividui + 1);
 
 			double* vettoreF = new double[nIndividui];
 			bool* vettoreSuccessi = new bool[nIndividui];
@@ -56,24 +59,17 @@ template <class T> class ADE {
 
 			unsigned short treIndici[3];
 
-
-			//Troviamo l'individuo migliore
-			unsigned int migliorPunteggioIniziale = UINT32_MAX;
-			unsigned short migliore = 0;
-
-			for (unsigned short i = 0; i < nIndividui; i++) {
-				if (popolazione[i]->score < migliorPunteggioIniziale) {
-					migliorPunteggioIniziale = popolazione[i]->score;
-					migliore = i;
-				}
-			}
-
 			unsigned int contatore = 0;
 			sec tempoDisponibile = tempoFinale - orologio::now();
 
 			unsigned short posizione = 0;
 
 			while (true) {
+
+				sort(popolazione, popolazione + nIndividui, [](T* p1, T* p2) -> bool {
+					return p1->score < p2->score;
+				});
+
 				sec tempoRimasto = tempoFinale - orologio::now();
 				auto count = tempoRimasto.count();
 				if (count <= 0.)
@@ -99,24 +95,24 @@ template <class T> class ADE {
 				for (unsigned short i = 0; i < nIndividui; i++) {
 					indiciRandom->generaIndici(treIndici, 3);
 
-					*popolazioneAlternativa[i] = *(popolazione[migliore]);
+					unsigned short indiceMiglioreRand = genRand.randIntU(0, ceil(genRand.randDouble(0.05, 0.2) * nIndividui) - 1);
+
+					*popolazioneAlternativa[i] = *(popolazione[treIndici[0]]);
 					popolazioneAlternativa[i]->differenza(popolazione[treIndici[1]]);
 					popolazioneAlternativa[i]->prodotto(vettoreF[i]);
-					popolazioneAlternativa[i]->somma(popolazione[treIndici[0]]);
 
+					*popolazioneAlternativa[i + 1] = *(popolazione[indiceMiglioreRand]);
+					popolazioneAlternativa[i + 1]->differenza(popolazione[i]);
+					popolazioneAlternativa[i + 1]->prodotto(vettoreF[i]);
+
+					popolazioneAlternativa[i]->somma(popolazioneAlternativa[i + 1]);
+					popolazioneAlternativa[i]->somma(popolazione[i]);
 				}
 
 				//ricercaLocaleRandomizzata(popolazioneAlternativa, nIndividui);
-				ricercaLocale(popolazioneAlternativa[migliore]);
+				ricercaLocale(popolazioneAlternativa[0]);
 
-				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, migliore, normalizzazione, vettoreSuccessi);
-
-				/*
-				for (unsigned short i = 0; i < nIndividui; i++) {
-					if (genRand.randDouble(0, 1) < 0.1)
-						vettoreF[i] = Fmin + genRand.randDouble(0, 1) * (Fmax - Fmin);
-				}
-				*/
+				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, normalizzazione, vettoreSuccessi);
 
 				double sQ = 0, s = 0;
 				unsigned short contatore = 0;
@@ -138,6 +134,17 @@ template <class T> class ADE {
 
 			//cout << endl << endl;
 
+			//Troviamo l'individuo migliore
+			unsigned int migliorPunteggioIniziale = UINT32_MAX;
+			unsigned short migliore = 0;
+
+			for (unsigned short i = 0; i < nIndividui; i++) {
+				if (popolazione[i]->score < migliorPunteggioIniziale) {
+					migliorPunteggioIniziale = popolazione[i]->score;
+					migliore = i;
+				}
+			}
+
 			ricercaLocale(popolazione[migliore]);
 
 			//stampa(popolazione, nIndividui);
@@ -148,6 +155,7 @@ template <class T> class ADE {
 				delete popolazione[i];
 				delete popolazioneAlternativa[i];
 			}
+			delete popolazioneAlternativa[nIndividui];
 
 			delete[] popolazione;
 			delete[] popolazioneAlternativa;

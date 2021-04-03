@@ -13,11 +13,11 @@ void ADE_DEP_DPFSP::creaPopolazione(Permutazione** popolazione, unsigned short n
 }
 
 void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned short nIndividui, bool normalizzazione) {
-	NEH2(popolazione[0]);
-	popolazione[0]->score = valutaIndividuo(popolazione[0]);
-	if (normalizzazione) normalizza(popolazione[0]);
+	//NEH2(popolazione[0]);
+	//popolazione[0]->score = valutaIndividuo(popolazione[0]);
+	//if (normalizzazione) normalizza(popolazione[0]);
 
-	for (unsigned short i = 1; i < nIndividui; i++) {
+	for (unsigned short i = 0; i < nIndividui; i++) {
 		popolazione[i]->random();
 		popolazione[i]->score = valutaIndividuo(popolazione[i]);
 		if(normalizzazione) normalizza(popolazione[i]);
@@ -25,7 +25,7 @@ void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned 
 }
 
 void ADE_DEP_DPFSP::selezionaPopolazione(Permutazione** popolazione, Permutazione** popolazioneAlternativa,
-	unsigned short nIndividui, double theta, unsigned short& migliore, bool normalizzazione, bool* vettoreSuccessi) {
+	unsigned short nIndividui, double theta, bool normalizzazione, bool* vettoreSuccessi) {
 
 	double delta;
 
@@ -37,11 +37,7 @@ void ADE_DEP_DPFSP::selezionaPopolazione(Permutazione** popolazione, Permutazion
 		delta = ((int)popolazioneAlternativa[i]->score - (int)popolazione[i]->score) / (double)popolazione[i]->score;
 
 		if (popolazioneAlternativa[i]->score < popolazione[i]->score ||
-			(i != migliore && genRand.randDouble(0, 1) < max(theta - delta, 0.))) {
-
-			if (popolazioneAlternativa[i]->score < popolazione[migliore]->score) {
-				migliore = i;
-			}
+			(i != 0 && genRand.randDouble(0, 1) < max(theta - delta, 0.))) {
 
 			popolazione[i]->scambia(popolazioneAlternativa[i]);
 			if (normalizzazione) normalizza(popolazione[i]);
@@ -223,8 +219,8 @@ void ADE_DEP_DPFSP::subCrossover(Permutazione* i1, Permutazione* i2, Permutazion
 }
 
 void ADE_DEP_DPFSP::ricercaLocale(Permutazione* p) {
-	VND(p, false);
 	VNDEXC(p);
+	VND(p, false);
 	p->score = valutaIndividuo(p);
 }
 

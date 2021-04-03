@@ -27,7 +27,7 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 
 		void creaPopolazione(Permutazione**, unsigned short);
 		void inizializzaPopolazione(Permutazione**, unsigned short, bool);
-		void selezionaPopolazione(Permutazione**, Permutazione**, unsigned short, double, unsigned short&, bool, bool*);
+		void selezionaPopolazione(Permutazione**, Permutazione**, unsigned short, double, bool, bool*);
 		void normalizza(Permutazione*);
 		void NEH2(Permutazione*);
 		void crossover(Permutazione*, Permutazione*);
