@@ -232,7 +232,7 @@ void ADE_DEP_DPFSP::ricercaLocaleRandomizzata(Permutazione** popolazione, unsign
 	//Chiama VND sugli elementi selezionati
 	unsigned short posizioni[1];
 	indiciRandom->generaIndici(posizioni, 1);
-	//VNDEXC(popolazione[posizioni[0]]);
+	VNDEXC(popolazione[posizioni[0]]);
 	VND(popolazione[posizioni[0]], false);
 }
 
