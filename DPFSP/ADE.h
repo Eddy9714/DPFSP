@@ -106,7 +106,7 @@ template <class T> class ADE {
 					//popolazioneAlternativa[i + 1]->prodotto(vettoreF[i]);
 
 					//popolazioneAlternativa[i]->somma(popolazioneAlternativa[i + 1]);
-					popolazioneAlternativa[i]->somma(popolazione[i]);
+					popolazioneAlternativa[i]->somma(popolazione[treIndici[0]]);
 				}
 
 				//ricercaLocaleRandomizzata(popolazioneAlternativa, nIndividui);
