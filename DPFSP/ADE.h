@@ -95,22 +95,23 @@ template <class T> class ADE {
 				for (unsigned short i = 0; i < nIndividui; i++) {
 					indiciRandom->generaIndici(treIndici, 3);
 
-					unsigned short indiceMiglioreRand = genRand.randIntU(0, ceil(genRand.randDouble(0.05, 0.2) * nIndividui) - 1);
+					//unsigned short indiceMiglioreRand = genRand.randIntU(0, ceil(genRand.randDouble(0.05, 0.2) * nIndividui) - 1);
 
-					*popolazioneAlternativa[i] = *(popolazione[indiceMiglioreRand]);
+					*popolazioneAlternativa[i] = *(popolazione[treIndici[0]]);
 					popolazioneAlternativa[i]->differenza(popolazione[treIndici[1]]);
 					popolazioneAlternativa[i]->prodotto(vettoreF[i]);
 
-					//*popolazioneAlternativa[i + 1] = *(popolazione[indiceMiglioreRand]);
-					//popolazioneAlternativa[i + 1]->differenza(popolazione[i]);
-					//popolazioneAlternativa[i + 1]->prodotto(vettoreF[i]);
+					*popolazioneAlternativa[i + 1] = *(popolazione[0]);
+					popolazioneAlternativa[i + 1]->differenza(popolazione[i]);
+					popolazioneAlternativa[i + 1]->prodotto(vettoreF[i]);
 
-					//popolazioneAlternativa[i]->somma(popolazioneAlternativa[i + 1]);
-					popolazioneAlternativa[i]->somma(popolazione[treIndici[0]]);
+					popolazioneAlternativa[i]->somma(popolazioneAlternativa[i + 1]);
+					popolazioneAlternativa[i]->somma(popolazione[i]);
 				}
 
-				//ricercaLocaleRandomizzata(popolazioneAlternativa, nIndividui);
-				ricercaLocale(popolazioneAlternativa[0]);
+				if(genRand.randDouble(0,1) < 0.7)
+					ricercaLocaleRandomizzata(popolazioneAlternativa, nIndividui);
+				else ricercaLocale(popolazioneAlternativa[0]);
 
 				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, normalizzazione, vettoreSuccessi);
 
