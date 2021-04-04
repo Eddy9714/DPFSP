@@ -34,6 +34,7 @@ class ADE_DEP_DPFSP : public ADE<Permutazione> {
 		void subCrossover(Permutazione*, Permutazione*, Permutazione*);
 		void ricercaLocale(Permutazione*);
 		void ricercaLocaleRandomizzata(Permutazione**, unsigned short);
+		void scambiaFabbricheRandom(Permutazione*);
 
 		void VND(Permutazione*, bool);
 		void LS1(Permutazione*, unsigned short, unsigned short);

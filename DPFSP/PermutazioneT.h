@@ -1,6 +1,7 @@
 #include "Permutazione.h"
 #include <cstring>
 #include "Random.h"
+#include "Globali.h"
 
 class PermutazioneT : public Permutazione {
 
@@ -12,11 +13,6 @@ public:
 	void prodotto(double);
 
 private:
-
-	struct Coppia {
-		unsigned short x;
-		unsigned short y;
-	};
 
 	void randomSS(PermutazioneT*, unsigned short&, double, Coppia*);
 	void randomMergeSS(PermutazioneT*, unsigned short&, double, Coppia*);

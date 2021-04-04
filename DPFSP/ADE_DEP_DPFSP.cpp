@@ -45,6 +45,8 @@ void ADE_DEP_DPFSP::selezionaPopolazione(Permutazione** popolazione, Permutazion
 			vettoreSuccessi[i] = true;
 		}
 		else vettoreSuccessi[i] = false;
+
+		scambiaFabbricheRandom(popolazione[i]);
 	}
 };
 
@@ -909,6 +911,58 @@ void ADE_DEP_DPFSP::normalizza(Permutazione* p) {
 
 	delete[] valoriMinimiF;
 	delete[] indiciFabbriche;
+}
+
+void ADE_DEP_DPFSP::scambiaFabbricheRandom(Permutazione* p) {
+	Coppia* indiciFabbriche = new Coppia[istanza.fabbriche];
+	unsigned short* valoriFabbriche = new unsigned short[istanza.fabbriche - 1];
+
+	indiciFabbriche[0] = {0, 0};
+	indiciFabbriche[istanza.fabbriche - 1] = { 0, p->dimensione - 1 };
+
+	unsigned short incremento = 0;
+
+	for (unsigned short i = 0; i < p->dimensione; i++) {
+		if (p->individuo[i] >= istanza.lavori) {
+			valoriFabbriche[incremento] = p->individuo[i];
+
+			indiciFabbriche[incremento].y = i - 1;
+			indiciFabbriche[++incremento].x = i + 1;
+		}
+	}
+
+	unsigned short* individuo = new unsigned short[p->dimensione];
+	//Scambia fabbriche
+	for (unsigned short k = istanza.fabbriche - 1; k > 0; k--) {
+		unsigned short valoreRandom = genRand.randIntU(0, k);
+		Coppia tmp = indiciFabbriche[k];
+		indiciFabbriche[k] = indiciFabbriche[valoreRandom];
+		indiciFabbriche[valoreRandom] = tmp;
+	}
+
+	//Copia valori fabbriche su individuo
+	unsigned short posizione = 0;
+	unsigned short dimensione = 0;
+	incremento = 0;
+
+	for (unsigned short i = 0; i < istanza.fabbriche; i++) {
+		dimensione = indiciFabbriche[i].y - indiciFabbriche[i].x + 1;
+
+		if (dimensione != 0) {
+			memcpy(individuo + posizione, p->individuo + indiciFabbriche[i].x,
+				sizeof(unsigned short) * dimensione);
+			posizione += dimensione;
+		}
+		
+		if(i != istanza.fabbriche - 1)
+			individuo[posizione++] = valoriFabbriche[i];
+	}
+
+	delete[] p->individuo;
+	p->individuo = individuo;
+
+	delete[] indiciFabbriche;
+	delete[] valoriFabbriche;
 }
 
 Permutazione ADE_DEP_DPFSP::esegui(unsigned short nIndividui, unsigned short scalaElaborazione, double theta,

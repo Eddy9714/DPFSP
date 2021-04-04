@@ -75,7 +75,7 @@ template <class T> class ADE {
 				if (count <= 0.)
 					break;
 
-				//cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
+				cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
 				//stampa(popolazione, nIndividui);
 
 				unsigned short indiceRandom;
@@ -97,15 +97,15 @@ template <class T> class ADE {
 
 					unsigned short indiceMiglioreRand = genRand.randIntU(0, ceil(genRand.randDouble(0.05, 0.2) * nIndividui) - 1);
 
-					*popolazioneAlternativa[i] = *(popolazione[treIndici[0]]);
+					*popolazioneAlternativa[i] = *(popolazione[indiceMiglioreRand]);
 					popolazioneAlternativa[i]->differenza(popolazione[treIndici[1]]);
 					popolazioneAlternativa[i]->prodotto(vettoreF[i]);
 
-					*popolazioneAlternativa[i + 1] = *(popolazione[indiceMiglioreRand]);
-					popolazioneAlternativa[i + 1]->differenza(popolazione[i]);
-					popolazioneAlternativa[i + 1]->prodotto(vettoreF[i]);
+					//*popolazioneAlternativa[i + 1] = *(popolazione[indiceMiglioreRand]);
+					//popolazioneAlternativa[i + 1]->differenza(popolazione[i]);
+					//popolazioneAlternativa[i + 1]->prodotto(vettoreF[i]);
 
-					popolazioneAlternativa[i]->somma(popolazioneAlternativa[i + 1]);
+					//popolazioneAlternativa[i]->somma(popolazioneAlternativa[i + 1]);
 					popolazioneAlternativa[i]->somma(popolazione[i]);
 				}
 
@@ -132,7 +132,7 @@ template <class T> class ADE {
 				
 			}
 
-			//cout << endl << endl;
+			cout << endl << endl;
 
 			//Troviamo l'individuo migliore
 			unsigned int migliorPunteggioIniziale = UINT32_MAX;
@@ -147,7 +147,7 @@ template <class T> class ADE {
 
 			ricercaLocale(popolazione[migliore]);
 
-			//stampa(popolazione, nIndividui);
+			stampa(popolazione, nIndividui);
 
 			T migliorIndividuo = *(popolazione[migliore]);
 
