@@ -13,9 +13,9 @@ void ADE_DEP_DPFSP::creaPopolazione(Permutazione** popolazione, unsigned short n
 }
 
 void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned short nIndividui, bool normalizzazione) {
-	//NEH2(popolazione[0]);
-	//popolazione[0]->score = valutaIndividuo(popolazione[0]);
-	//if (normalizzazione) normalizza(popolazione[0]);
+	NEH2(popolazione[0]);
+	popolazione[0]->score = valutaIndividuo(popolazione[0]);
+	if (normalizzazione) normalizza(popolazione[0]);
 
 	for (unsigned short i = 0; i < nIndividui; i++) {
 		popolazione[i]->random();
@@ -232,7 +232,7 @@ void ADE_DEP_DPFSP::ricercaLocaleRandomizzata(Permutazione** popolazione, unsign
 	//Chiama VND sugli elementi selezionati
 	unsigned short posizioni[1];
 	indiciRandom->generaIndici(posizioni, 1);
-	VNDEXC(popolazione[posizioni[0]]);
+	//VNDEXC(popolazione[posizioni[0]]);
 	VND(popolazione[posizioni[0]], false);
 }
 
