@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 			break;
 		case 1:
 			cerr << "Devi inserire il percorso del file!" << endl << endl;
-			//exit(-1);
+			exit(-1);
 	}
 
 	/*
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 	const auto tempoIniziale = orologio::now();
 
 
-	percorsoFile = "C:/users/edu4r/Desktop/DPFSP_Large/5/Ta016_5.txt";
+	//percorsoFile = "C:/users/edu4r/Desktop/DPFSP_Large/5/Ta016_5.txt";
 
 	ADE_DEP_DPFSP adeDep(percorsoFile);
 	Permutazione migliorIndividuo = adeDep.esegui(nIndividui, scalaElaborazione, theta, 0.1, Fmax, 
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 
 	//Stampo a video le informazioni
 
-	
+	/*
 	cout << "Risultati: " << endl << endl;
 	cout << "Tempo speso: " << durata.count() << " secondi" << endl;
 	cout << "Individuo: ";
@@ -75,6 +75,7 @@ int main(int argc, char* argv[])
 	cout << "Punteggio: " << migliorIndividuo.score << endl << endl;
 	
 	exit(0);
+	*/
 	
 
 	//Salvo le informazioni su un CSV
