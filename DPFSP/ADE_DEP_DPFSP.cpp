@@ -8,7 +8,7 @@ ADE_DEP_DPFSP::ADE_DEP_DPFSP(string percorso) : istanza(Istanza(percorso)) {}
 void ADE_DEP_DPFSP::creaPopolazione(Permutazione** popolazione, unsigned short nIndividui) {
 
 	for (unsigned int k = 0; k < nIndividui; k++) {
-		popolazione[k] = new PermutazioneI(istanza.lavori + istanza.fabbriche - 1);
+		popolazione[k] = new PermutazioneT(istanza.lavori + istanza.fabbriche - 1);
 	}
 }
 
@@ -150,8 +150,8 @@ unsigned int ADE_DEP_DPFSP::valutaIndividuo(Permutazione* p) {
 
 void ADE_DEP_DPFSP::crossover(Permutazione* i1, Permutazione* i2) {
 
-	PermutazioneI p1(i1->dimensione);
-	PermutazioneI p2(i2->dimensione);
+	PermutazioneT p1(i1->dimensione);
+	PermutazioneT p2(i2->dimensione);
 
 	subCrossover(i1, i2, &p1);
 	subCrossover(i2, i1, &p2);
