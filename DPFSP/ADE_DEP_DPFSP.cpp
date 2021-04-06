@@ -17,7 +17,7 @@ void ADE_DEP_DPFSP::inizializzaPopolazione(Permutazione** popolazione, unsigned 
 	popolazione[0]->score = valutaIndividuo(popolazione[0]);
 	if (normalizzazione) normalizza(popolazione[0]);
 
-	for (unsigned short i = 0; i < nIndividui; i++) {
+	for (unsigned short i = 1; i < nIndividui; i++) {
 		popolazione[i]->random();
 		popolazione[i]->score = valutaIndividuo(popolazione[i]);
 		if(normalizzazione) normalizza(popolazione[i]);

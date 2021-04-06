@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 	unsigned int nIndividui = 50;
 	double theta = 0.05;
 	double Fmax = 1;
-	bool normalizzazione = true;
+	bool normalizzazione = false;
 	string percorsoFile;
 
 	size_t pos;
