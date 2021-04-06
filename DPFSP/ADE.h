@@ -46,7 +46,7 @@ template <class T> class ADE {
 
 			bool* vettoreSuccessi = new bool[nIndividui];
 
-			unsigned short h = 25;
+			unsigned short h = nIndividui;
 			double* vettoreM1 = new double[h];
 			double* vettoreM2 = new double[h];
 
@@ -107,13 +107,11 @@ template <class T> class ADE {
 				for (unsigned short i = 0; i < nIndividui; i++) {
 					indiciRandom->generaIndici(treIndici, 3);
 
-					unsigned short indiceMiglioreRand = genRand.randIntU(0, ceil(genRand.randDouble(0.05, 0.1) * nIndividui) - 1);
-
 					*popolazioneAlternativa[i] = *(popolazione[treIndici[0]]);
 					popolazioneAlternativa[i]->differenza(popolazione[treIndici[1]]);
 					popolazioneAlternativa[i]->prodotto(vettoreF2[i]);
 
-					*popolazioneAlternativa[i + 1] = *(popolazione[indiceMiglioreRand]);
+					*popolazioneAlternativa[i + 1] = *(popolazione[0]);
 					popolazioneAlternativa[i + 1]->differenza(popolazione[i]);
 					popolazioneAlternativa[i + 1]->prodotto(vettoreF1[i]);
 
@@ -121,8 +119,7 @@ template <class T> class ADE {
 					popolazioneAlternativa[i]->somma(popolazione[i]);
 				}
 
-				unsigned short indiceMiglioreRand = genRand.randIntU(0, 0.1 * nIndividui - 1);
-				ricercaLocale(popolazioneAlternativa[indiceMiglioreRand]);
+				ricercaLocale(popolazioneAlternativa[0]);
 
 				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, normalizzazione, vettoreSuccessi);
 
