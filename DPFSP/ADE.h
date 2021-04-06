@@ -46,7 +46,7 @@ template <class T> class ADE {
 
 			bool* vettoreSuccessi = new bool[nIndividui];
 
-			unsigned short h = nIndividui;
+			unsigned short h = 25;
 			double* vettoreM1 = new double[h];
 			double* vettoreM2 = new double[h];
 
@@ -79,7 +79,7 @@ template <class T> class ADE {
 				if (count <= 0.)
 					break;
 
-				//cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
+				cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
 				//stampa(popolazione, nIndividui);
 
 				unsigned short indiceRandom;
@@ -121,7 +121,7 @@ template <class T> class ADE {
 					popolazioneAlternativa[i]->somma(popolazione[i]);
 				}
 
-				unsigned short indiceMiglioreRand = genRand.randIntU(0, ceil(genRand.randDouble(0.05, 0.2) * nIndividui) - 1);
+				unsigned short indiceMiglioreRand = genRand.randIntU(0, 0.1 * nIndividui - 1);
 				ricercaLocale(popolazioneAlternativa[indiceMiglioreRand]);
 
 				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, normalizzazione, vettoreSuccessi);
@@ -151,7 +151,7 @@ template <class T> class ADE {
 				
 			}
 
-			//cout << endl << endl;
+			cout << endl << endl;
 
 			//Troviamo l'individuo migliore
 			unsigned int migliorPunteggioIniziale = UINT32_MAX;
@@ -166,7 +166,7 @@ template <class T> class ADE {
 
 			ricercaLocale(popolazione[migliore]);
 
-			//stampa(popolazione, nIndividui);
+			stampa(popolazione, nIndividui);
 
 			T migliorIndividuo = *(popolazione[migliore]);
 
