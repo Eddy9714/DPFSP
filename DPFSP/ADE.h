@@ -3,187 +3,161 @@
 #include "Globali.h"
 #include <chrono>
 #include <iostream>
-#include <algorithm>
 
 using namespace std;
 
 template <class T> class ADE {
 
-	protected:
-		IndiciRandom* indiciRandom;
-		unsigned int seed;
+protected:
+	IndiciRandom* indiciRandom;
+	unsigned int seed;
 
-		virtual void creaPopolazione(T**, unsigned short) = 0;
-		virtual void inizializzaPopolazione(T**, unsigned short, bool) = 0;
-		virtual void crossover(T*, T*) = 0;
-		virtual void normalizza(T*) = 0;
-		virtual void selezionaPopolazione(T**, T**, unsigned short, double, bool, bool*) = 0;
-		virtual void ricercaLocaleRandomizzata(T**, unsigned short) = 0;
-		virtual void ricercaLocale(T*) = 0;
-		virtual unsigned int valutaIndividuo(T*) = 0;
-		virtual void stampa(T**, unsigned short) = 0;
+	virtual void creaPopolazione(T**, unsigned short) = 0;
+	virtual void inizializzaPopolazione(T**, unsigned short, bool) = 0;
+	virtual void crossover(T*, T*) = 0;
+	virtual void normalizza(T*) = 0;
+	virtual void selezionaPopolazione(T**, T**, unsigned short, double, unsigned short&, bool, bool*) = 0;
+	virtual void ricercaLocaleRandomizzata(T**, unsigned short) = 0;
+	virtual void ricercaLocale(T*) = 0;
+	virtual unsigned int valutaIndividuo(T*) = 0;
+	virtual void stampa(T**, unsigned short) = 0;
 
-		T esegui(unsigned short nIndividui, unsigned long long tempoDisponibileMs, double theta, double Fmin, 
-			double Fmax, bool normalizzazione, unsigned int s) {
+	T esegui(unsigned short nIndividui, unsigned long long tempoDisponibileMs, double theta, double Fmin,
+		double Fmax, bool normalizzazione, unsigned int s) {
 
-			using orologio = std::chrono::system_clock;
-			auto tempoFinale = orologio::now() + chrono::milliseconds(tempoDisponibileMs);
-			using sec = std::chrono::duration<double>;
+		using orologio = std::chrono::system_clock;
+		auto tempoFinale = orologio::now() + chrono::milliseconds(tempoDisponibileMs);
+		using sec = std::chrono::duration<double>;
 
-			seed = s;
-			if(seed > 0) genRand.impostaSeed(seed);
+		seed = s;
+		if (seed > 0) genRand.impostaSeed(seed);
 
-			T** popolazione = new T * [nIndividui];
-			T** popolazioneAlternativa = new T * [nIndividui + 1];
+		T** popolazione = new T * [nIndividui];
+		T** popolazioneAlternativa = new T * [nIndividui];
 
-			creaPopolazione(popolazione, nIndividui);
+		creaPopolazione(popolazione, nIndividui);
+		creaPopolazione(popolazioneAlternativa, nIndividui);
 
-			//L'ultimo elemento è di appoggio
-			creaPopolazione(popolazioneAlternativa, nIndividui + 1);
+		double* vettoreF = new double[nIndividui];
+		bool* vettoreSuccessi = new bool[nIndividui];
 
-			double* vettoreF1 = new double[nIndividui];
-			double* vettoreF2 = new double[nIndividui];
+		unsigned short h = nIndividui;
+		double* vettoreM = new double[h];
 
-			bool* vettoreSuccessi = new bool[nIndividui];
+		inizializzaPopolazione(popolazione, nIndividui, normalizzazione);
 
-			unsigned short h = nIndividui;
-			double* vettoreM1 = new double[h];
-			double* vettoreM2 = new double[h];
+		//stampa(popolazione, nIndividui);
 
-			inizializzaPopolazione(popolazione, nIndividui, normalizzazione);
+		indiciRandom = new IndiciRandom(&genRand, nIndividui);
 
+		for (unsigned short i = 0; i < h; i++) {
+			vettoreM[i] = 0.5;
+		}
+
+		unsigned short treIndici[3];
+
+
+		//Troviamo l'individuo migliore
+		unsigned int migliorPunteggioIniziale = UINT32_MAX;
+		unsigned short migliore = 0;
+
+		for (unsigned short i = 0; i < nIndividui; i++) {
+			if (popolazione[i]->score < migliorPunteggioIniziale) {
+				migliorPunteggioIniziale = popolazione[i]->score;
+				migliore = i;
+			}
+		}
+
+		unsigned int contatore = 0;
+		sec tempoDisponibile = tempoFinale - orologio::now();
+
+		unsigned short posizione = 0;
+
+		while (true) {
+			sec tempoRimasto = tempoFinale - orologio::now();
+			auto count = tempoRimasto.count();
+			if (count <= 0.)
+				break;
+
+			//cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
 			//stampa(popolazione, nIndividui);
 
-			indiciRandom = new IndiciRandom(&genRand, nIndividui);
-
-			for (unsigned short i = 0; i < h; i++) {
-				vettoreM1[i] = 0.5;
-				vettoreM2[i] = 0.5;
-			}
-
-			unsigned short treIndici[3];
-
-			unsigned int contatore = 0;
-			sec tempoDisponibile = tempoFinale - orologio::now();
-
-			unsigned short posizione = 0;
-
-			while (true) {
-
-				sort(popolazione, popolazione + nIndividui, [](T* p1, T* p2) -> bool {
-					return p1->score < p2->score;
-				});
-
-				sec tempoRimasto = tempoFinale - orologio::now();
-				auto count = tempoRimasto.count();
-				if (count <= 0.)
-					break;
-
-				//cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
-				//stampa(popolazione, nIndividui);
-
-				unsigned short indiceRandom;
-				double valoreRandom;
-
-				for (unsigned short i = 0; i < nIndividui; i++) {
-
-					indiceRandom = genRand.randIntU(0, h - 1);
-
-					do {
-						valoreRandom = genRand.cauchy(vettoreM1[indiceRandom], 0.1);
-					} while (valoreRandom < 0);
-
-					vettoreF1[i] = min(Fmax, valoreRandom);
-
-					indiceRandom = genRand.randIntU(0, h - 1);
-
-					do {
-						valoreRandom = genRand.cauchy(vettoreM2[indiceRandom], 0.1);
-					} while (valoreRandom < 0);
-	
-					vettoreF2[i] = min(Fmax, valoreRandom);
-				}
-
-				for (unsigned short i = 0; i < nIndividui; i++) {
-					indiciRandom->generaIndici(treIndici, 3);
-
-					*popolazioneAlternativa[i] = *(popolazione[treIndici[0]]);
-					popolazioneAlternativa[i]->differenza(popolazione[treIndici[1]]);
-					popolazioneAlternativa[i]->prodotto(vettoreF2[i]);
-
-					*popolazioneAlternativa[i + 1] = *(popolazione[0]);
-					popolazioneAlternativa[i + 1]->differenza(popolazione[i]);
-					popolazioneAlternativa[i + 1]->prodotto(vettoreF1[i]);
-
-					popolazioneAlternativa[i]->somma(popolazioneAlternativa[i + 1]);
-					popolazioneAlternativa[i]->somma(popolazione[i]);
-				}
-
-				ricercaLocale(popolazioneAlternativa[0]);
-
-				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, normalizzazione, vettoreSuccessi);
-
-				double sQ1 = 0, s1 = 0, sQ2 = 0, s2 = 0;
-
-				unsigned short contatore = 0;
-				for (unsigned short i = 0; i < nIndividui; i++) {
-					if (vettoreSuccessi[i]) {
-						sQ1 += pow(vettoreF1[i], 2);
-						s1 += vettoreF1[i];
-						sQ2 += pow(vettoreF2[i], 2);
-						s2 += vettoreF2[i];
-						contatore++;
-					}
-				}
-
-				if (contatore != 0) {
-					double mediaP = sQ1 / s1;
-					vettoreM1[posizione] = mediaP;
-
-					mediaP = sQ2 / s2;
-					vettoreM2[posizione] = mediaP;
-
-					posizione = (posizione + 1) % h;
-				}
-				
-			}
-
-			//cout << endl << endl;
-
-			//Troviamo l'individuo migliore
-			unsigned int migliorPunteggioIniziale = UINT32_MAX;
-			unsigned short migliore = 0;
+			unsigned short indiceRandom;
+			double valoreRandom;
 
 			for (unsigned short i = 0; i < nIndividui; i++) {
-				if (popolazione[i]->score < migliorPunteggioIniziale) {
-					migliorPunteggioIniziale = popolazione[i]->score;
-					migliore = i;
+
+				indiceRandom = genRand.randIntU(0, h - 1);
+
+				do {
+					valoreRandom = genRand.cauchy(vettoreM[indiceRandom], 0.1);
+				} while (valoreRandom < 0);
+
+				vettoreF[i] = min(Fmax, valoreRandom);
+			}
+
+			for (unsigned short i = 0; i < nIndividui; i++) {
+				indiciRandom->generaIndici(treIndici, 3);
+
+				*popolazioneAlternativa[i] = *(popolazione[migliore]);
+				popolazioneAlternativa[i]->differenza(popolazione[treIndici[1]]);
+				popolazioneAlternativa[i]->prodotto(vettoreF[i]);
+				popolazioneAlternativa[i]->somma(popolazione[treIndici[0]]);
+
+			}
+
+			//ricercaLocaleRandomizzata(popolazioneAlternativa, nIndividui);
+			ricercaLocale(popolazioneAlternativa[migliore]);
+
+			selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, migliore, normalizzazione, vettoreSuccessi);
+
+			/*
+			for (unsigned short i = 0; i < nIndividui; i++) {
+				if (genRand.randDouble(0, 1) < 0.1)
+					vettoreF[i] = Fmin + genRand.randDouble(0, 1) * (Fmax - Fmin);
+			}
+			*/
+
+			double sQ = 0, s = 0;
+			unsigned short contatore = 0;
+			for (unsigned short i = 0; i < nIndividui; i++) {
+				if (vettoreSuccessi[i]) {
+					sQ += pow(vettoreF[i], 2);
+					s += vettoreF[i];
+					contatore++;
 				}
 			}
 
-			ricercaLocale(popolazione[migliore]);
-
-			//stampa(popolazione, nIndividui);
-
-			T migliorIndividuo = *(popolazione[migliore]);
-
-			for (unsigned int i = 0; i < nIndividui; i++) {
-				delete popolazione[i];
-				delete popolazioneAlternativa[i];
+			if (contatore != 0) {
+				double mediaP = sQ / s;
+				vettoreM[posizione] = mediaP;
+				posizione = (posizione + 1) % h;
 			}
-			delete popolazioneAlternativa[nIndividui];
 
-			delete[] popolazione;
-			delete[] popolazioneAlternativa;
+		}
 
-			delete[] vettoreF1;
-			delete[] vettoreF2;
-			delete[] vettoreM1;
-			delete[] vettoreM2;
-			delete[] vettoreSuccessi;
+		//cout << endl << endl;
 
-			delete indiciRandom;
+		ricercaLocale(popolazione[migliore]);
 
-			return migliorIndividuo;
-		};
+		//stampa(popolazione, nIndividui);
+
+		T migliorIndividuo = *(popolazione[migliore]);
+
+		for (unsigned int i = 0; i < nIndividui; i++) {
+			delete popolazione[i];
+			delete popolazioneAlternativa[i];
+		}
+
+		delete[] popolazione;
+		delete[] popolazioneAlternativa;
+
+		delete[] vettoreF;
+		delete[] vettoreM;
+		delete[] vettoreSuccessi;
+
+		delete indiciRandom;
+
+		return migliorIndividuo;
+	};
 };
