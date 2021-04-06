@@ -46,7 +46,7 @@ void ADE_DEP_DPFSP::selezionaPopolazione(Permutazione** popolazione, Permutazion
 		}
 		else vettoreSuccessi[i] = false;
 
-		scambiaFabbricheRandom(popolazione[i]);
+		//scambiaFabbricheRandom(popolazione[i]);
 	}
 };
 

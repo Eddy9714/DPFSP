@@ -41,11 +41,14 @@ template <class T> class ADE {
 			//L'ultimo elemento è di appoggio
 			creaPopolazione(popolazioneAlternativa, nIndividui + 1);
 
-			double* vettoreF = new double[nIndividui];
+			double* vettoreF1 = new double[nIndividui];
+			double* vettoreF2 = new double[nIndividui];
+
 			bool* vettoreSuccessi = new bool[nIndividui];
 
 			unsigned short h = nIndividui;
-			double* vettoreM = new double[h];
+			double* vettoreM1 = new double[h];
+			double* vettoreM2 = new double[h];
 
 			inizializzaPopolazione(popolazione, nIndividui, normalizzazione);
 
@@ -54,7 +57,8 @@ template <class T> class ADE {
 			indiciRandom = new IndiciRandom(&genRand, nIndividui);
 
 			for (unsigned short i = 0; i < h; i++) {
-				vettoreM[i] = 0.5;
+				vettoreM1[i] = 0.5;
+				vettoreM2[i] = 0.5;
 			}
 
 			unsigned short treIndici[3];
@@ -86,24 +90,32 @@ template <class T> class ADE {
 					indiceRandom = genRand.randIntU(0, h - 1);
 
 					do {
-						valoreRandom = genRand.cauchy(vettoreM[indiceRandom], 0.1);
+						valoreRandom = genRand.cauchy(vettoreM1[indiceRandom], 0.1);
+					} while (valoreRandom < 0);
+
+					vettoreF1[i] = min(Fmax, valoreRandom);
+
+					indiceRandom = genRand.randIntU(0, h - 1);
+
+					do {
+						valoreRandom = genRand.cauchy(vettoreM2[indiceRandom], 0.1);
 					} while (valoreRandom < 0);
 	
-					vettoreF[i] = min(Fmax, valoreRandom);
+					vettoreF2[i] = min(Fmax, valoreRandom);
 				}
 
 				for (unsigned short i = 0; i < nIndividui; i++) {
 					indiciRandom->generaIndici(treIndici, 3);
 
-					unsigned short indiceMiglioreRand = genRand.randIntU(0, ceil(genRand.randDouble(0.05, 0.2) * nIndividui) - 1);
+					unsigned short indiceMiglioreRand = genRand.randIntU(0, ceil(genRand.randDouble(0.05, 0.1) * nIndividui) - 1);
 
 					*popolazioneAlternativa[i] = *(popolazione[treIndici[0]]);
 					popolazioneAlternativa[i]->differenza(popolazione[treIndici[1]]);
-					popolazioneAlternativa[i]->prodotto(0.9);
+					popolazioneAlternativa[i]->prodotto(vettoreF2[i]);
 
 					*popolazioneAlternativa[i + 1] = *(popolazione[indiceMiglioreRand]);
 					popolazioneAlternativa[i + 1]->differenza(popolazione[i]);
-					popolazioneAlternativa[i + 1]->prodotto(vettoreF[i]);
+					popolazioneAlternativa[i + 1]->prodotto(vettoreF1[i]);
 
 					popolazioneAlternativa[i]->somma(popolazioneAlternativa[i + 1]);
 					popolazioneAlternativa[i]->somma(popolazione[i]);
@@ -114,19 +126,26 @@ template <class T> class ADE {
 
 				selezionaPopolazione(popolazione, popolazioneAlternativa, nIndividui, theta, normalizzazione, vettoreSuccessi);
 
-				double sQ = 0, s = 0;
+				double sQ1 = 0, s1 = 0, sQ2 = 0, s2 = 0;
+
 				unsigned short contatore = 0;
 				for (unsigned short i = 0; i < nIndividui; i++) {
 					if (vettoreSuccessi[i]) {
-						sQ += pow(vettoreF[i], 2);
-						s += vettoreF[i];
+						sQ1 += pow(vettoreF1[i], 2);
+						s1 += vettoreF1[i];
+						sQ2 += pow(vettoreF2[i], 2);
+						s2 += vettoreF2[i];
 						contatore++;
 					}
 				}
 
 				if (contatore != 0) {
-					double mediaP = sQ / s;
-					vettoreM[posizione] = mediaP;
+					double mediaP = sQ1 / s1;
+					vettoreM1[posizione] = mediaP;
+
+					mediaP = sQ2 / s2;
+					vettoreM2[posizione] = mediaP;
+
 					posizione = (posizione + 1) % h;
 				}
 				
@@ -160,8 +179,10 @@ template <class T> class ADE {
 			delete[] popolazione;
 			delete[] popolazioneAlternativa;
 
-			delete[] vettoreF;
-			delete[] vettoreM;
+			delete[] vettoreF1;
+			delete[] vettoreF2;
+			delete[] vettoreM1;
+			delete[] vettoreM2;
 			delete[] vettoreSuccessi;
 
 			delete indiciRandom;
