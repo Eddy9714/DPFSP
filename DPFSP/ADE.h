@@ -79,7 +79,7 @@ template <class T> class ADE {
 				if (count <= 0.)
 					break;
 
-				cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
+				//cout << "Tempo rimasto: " << (unsigned int)count << " secondi \t\r";
 				//stampa(popolazione, nIndividui);
 
 				unsigned short indiceRandom;
@@ -151,7 +151,7 @@ template <class T> class ADE {
 				
 			}
 
-			cout << endl << endl;
+			//cout << endl << endl;
 
 			//Troviamo l'individuo migliore
 			unsigned int migliorPunteggioIniziale = UINT32_MAX;
@@ -166,7 +166,7 @@ template <class T> class ADE {
 
 			ricercaLocale(popolazione[migliore]);
 
-			stampa(popolazione, nIndividui);
+			//stampa(popolazione, nIndividui);
 
 			T migliorIndividuo = *(popolazione[migliore]);
 
