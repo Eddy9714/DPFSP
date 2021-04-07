@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 	unsigned int seed = 0;
 	unsigned short scalaElaborazione = 100;
 	unsigned int nIndividui = 50;
-	double theta = 0.05;
+	double theta = 0;
 	double Fmax = 1.2;
 	bool normalizzazione = false;
 	string percorsoFile;
